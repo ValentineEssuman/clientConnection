@@ -54,7 +54,7 @@ public class Client {
 //    public void setId(Long id) {
 //        this.id = ide;
 //    }
-    
+
 
     public String getName() {
         return name;
