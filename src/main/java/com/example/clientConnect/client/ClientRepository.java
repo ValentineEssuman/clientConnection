@@ -1,6 +1,7 @@
 package com.example.clientConnect.client;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -9,6 +10,6 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client,Long>{
 
 
-    Optional<Client> findClientByEmailAAndPassword(String email,String password);
+    Optional<Client> findClientByEmailAndPassword(@Param("email")String email, @Param("password")String password);
 
 }

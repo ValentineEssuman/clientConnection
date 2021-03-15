@@ -1,5 +1,6 @@
 package com.example.clientConnect.client;
 
+import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,10 @@ public class ClientService {
     }
 
     //Login Client
-    public Client loginClient(Client client) throws IllegalAccessException {
+    public Client loginClient(@NotNull Client client) throws ClientException {
 
-
-        return clientRepository.findClientByEmailAAndPassword(client.getEmail(),client.getPassword()).orElseThrow(
-                ()-> new IllegalAccessException("Invalid credentials")
+        return clientRepository.findClientByEmailAndPassword(client.getEmail(),client.getPassword()).orElseThrow(
+                ()-> new ClientException("Invalid credentials")
         );
 
     }
