@@ -21,22 +21,36 @@ public class Portfolio {
             generator = "portfolio_sequence"
     )
     private Long id;
+
     @Column(nullable = false)
     private String product;
-    @Column(nullable = false,updatable = false)
-    private Long client_id;
+
+//    @Column(nullable = false,updatable = false)
+    @OneToOne
+    private Client client;
+
     @Column(nullable = false,updatable = false)
     private double price;
+
     @Column(nullable = false)
     private double quantity;
+
     private LocalDate created_at = LocalDate.now();
 
-    public Portfolio(String ticker,
-                     Long client_id,
+    public Portfolio(String product,
+                     Client client,
                      double price,
                      double quantity) {
         this.product = product;
-        this.client_id = client_id;
+        this.client = client;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public Portfolio(String product,
+                     double price,
+                     double quantity) {
+        this.product = product;
         this.price = price;
         this.quantity = quantity;
     }
@@ -58,12 +72,12 @@ public class Portfolio {
         this.product = product;
     }
 
-    public Long getClient_id() {
-        return client_id;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public double getPrice() {
