@@ -42,6 +42,10 @@ public class Client {
         this.balance = balance;
     }
 
+    public Client(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;
