@@ -39,4 +39,11 @@ public class ClientService {
         );
 
     }
+
+    public Client getClientById(@NotNull Long id) throws ClientException {
+
+        return clientRepository.findById(id).orElseThrow(
+                () -> new ClientException("Client with "+id+"does not exist")
+        );
+    }
 }
