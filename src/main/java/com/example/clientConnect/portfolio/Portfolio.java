@@ -23,36 +23,18 @@ public class Portfolio {
     private Long id;
 
     @Column(nullable = false)
-    private String product;
+    private String name;
 
-//    @Column(nullable = false,updatable = false)
     @OneToOne
     private Client client;
 
-    @Column(nullable = false,updatable = false)
-    private double price;
-
-    @Column(nullable = false)
-    private double quantity;
-
     private LocalDate created_at = LocalDate.now();
 
-    public Portfolio(String product,
-                     Client client,
-                     double price,
-                     double quantity) {
-        this.product = product;
+    public Portfolio(String name,
+                     Client client) {
+        this.name = name;
         this.client = client;
-        this.price = price;
-        this.quantity = quantity;
-    }
 
-    public Portfolio(String product,
-                     double price,
-                     double quantity) {
-        this.product = product;
-        this.price = price;
-        this.quantity = quantity;
     }
 
     public Portfolio() {
@@ -63,13 +45,12 @@ public class Portfolio {
         return id;
     }
 
-
-    public String getProduct() {
-        return product;
+    public String getName() {
+        return name;
     }
 
-    public void setProduct(String product) {
-        this.product = product;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Client getClient() {
@@ -78,22 +59,6 @@ public class Portfolio {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
     }
 
     public LocalDate getCreated_at() {
