@@ -2,6 +2,7 @@ package com.example.clientConnect.client;
 
 import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +14,11 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    @Autowired
+
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
+
 
     public List<Client> getClients() {
         return clientRepository.findAll();
@@ -26,8 +28,8 @@ public class ClientService {
     public Client registerClient(Client client){
 
         client = clientRepository.save(client);
-
         return client;
+
 
     }
 
@@ -38,5 +40,12 @@ public class ClientService {
                 ()-> new ClientException("Invalid credentials")
         );
 
+    }
+
+    public Client getClientById(@NotNull Long id) throws ClientException {
+
+        return clientRepository.findById(id).orElseThrow(
+                () -> new ClientException("Client with "+id+"does not exist")
+        );
     }
 }
