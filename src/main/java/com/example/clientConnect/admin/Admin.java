@@ -1,4 +1,4 @@
-package com.example.admin.admin;
+package com.example.clientConnect.admin;
 
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package com.example.admin.admin;
+package com.example.clientConnect.admin;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;

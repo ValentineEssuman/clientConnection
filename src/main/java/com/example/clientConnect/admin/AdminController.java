@@ -1,4 +1,4 @@
-package com.example.admin.admin;
+package com.example.clientConnect.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,4 +22,6 @@ public class AdminController {
         admin = adminService.loginAdmin(admin);
         return  new ResponseEntity<>(admin, HttpStatus.OK);
     }
+
+
 }

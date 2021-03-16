@@ -1,6 +1,10 @@
-package com.example.admin.admin;
+package com.example.clientConnect.admin;
 
+import com.example.clientConnect.client.Client;
+import com.example.clientConnect.order.Order;
+import com.example.clientConnect.order.OrderRepository;
 import com.sun.istack.NotNull;
+import org.hibernate.hql.internal.ast.tree.IndexNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -9,9 +13,11 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
 
+
     @Autowired
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
+
     }
 
     public List<Admin> findAdmins(){
@@ -19,7 +25,6 @@ public class AdminService {
     }
 
     //add a new admin
-
     public Admin addAdmin(@NotNull Admin admin){
         Admin newadmin = adminRepository.save(admin);
         return newadmin;
@@ -34,4 +39,8 @@ public class AdminService {
 
     }
 
+
+
+
 }
+
