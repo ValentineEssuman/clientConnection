@@ -15,6 +15,10 @@ public class PortfolioService {
         this.portfolioRepository = portfolioRepository;
     }
 
+    public List<Portfolio> getPortfolios(){
+        return portfolioRepository.findAll();
+    }
+
     public List<Portfolio> getPortfolios(Client client) {
         return portfolioRepository.findAllByClient(client);
     }
