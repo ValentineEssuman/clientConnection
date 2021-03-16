@@ -37,6 +37,10 @@ public class Portfolio {
 
     }
 
+    public Portfolio(String name) {
+        this.name = name;
+    }
+
     public Portfolio() {
 
     }

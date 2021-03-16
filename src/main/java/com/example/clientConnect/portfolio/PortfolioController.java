@@ -21,6 +21,11 @@ public class PortfolioController {
         this.clientService = clientService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Portfolio>> getPortfolios(){
+        return new ResponseEntity<>(portfolioService.getPortfolios(),HttpStatus.OK);
+    }
+
     @GetMapping("/all/{client_id}")
     public ResponseEntity<List<Portfolio>> getPortfolios(@PathVariable("client_id") Long client_id) throws ClientException {
 

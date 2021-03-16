@@ -50,8 +50,12 @@ public class ProductController {
         return new ResponseEntity<>(product,HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
+    @PostMapping("/add/{portfolio_id}")
+    public ResponseEntity<Product> addProduct(@RequestBody Product product, @PathVariable Long portfolio_id) throws PortfolioException {
+
+        Portfolio portfolio = portfolioService.getPortfolio(portfolio_id);
+
+        product.setPortfolio(portfolio);
 
         product = productService.addProduct(product);
 
