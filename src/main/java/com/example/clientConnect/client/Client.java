@@ -1,5 +1,6 @@
 package com.example.clientConnect.client;
 
+import com.example.clientConnect.order.Order;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,13 @@ public class Client {
     @Column(nullable = false)
     private Integer balance = 0;
     private LocalDate created_at = LocalDate.now();
+
+/*
+    @OneToMany
+    @joinColumn(name="id")
+    private Order order;
+*/
+
 
     public Client() {
     }

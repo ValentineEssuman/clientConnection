@@ -1,5 +1,6 @@
 package com.example.clientConnect.admin;
 
+import com.example.clientConnect.client.AdminException;
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.order.OrderRepository;
@@ -31,16 +32,13 @@ public class AdminService {
     }
 
     //login
-    public Admin loginAdmin(@NotNull Admin admin){
+    public Admin loginAdmin(@NotNull Admin admin) throws AdminException {
 
         return adminRepository.findAdminByEmailAndPassword(admin.getEmail(), admin.getPassword()).orElseThrow(
-                ()-> new IllegalArgumentException("Admin does not exist or wrong input of admin")
+                ()-> new AdminException("Admin does not exist or wrong input of admin")
         );
 
     }
-
-
-
 
 }
 

@@ -1,3 +1,4 @@
+/*
 package com.example.clientConnect.order;
 
 
@@ -32,7 +33,8 @@ public class OrderService {
 
     }
 
- /*   //add Order
+ */
+/*   //add Order
     //find successful orders
     public Order add(@NotNull Order client) throws ClientException {
 
@@ -40,5 +42,7 @@ public class OrderService {
                 ()-> new ClientException("Invalid credentials")
         );
 
-    }*/
+    }*//*
+
 }
+*/

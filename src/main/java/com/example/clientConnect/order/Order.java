@@ -1,5 +1,7 @@
+/*
 package com.example.clientConnect.order;
 
+import com.example.clientConnect.client.Client;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -34,6 +36,16 @@ public class Order {
     @Column(nullable = false, updatable = false)
    private Integer portfolioid ;
    public  LocalDate created = LocalDate.now();
+
+
+*/
+/*
+
+    @ManyToOne(mappedBy="Client")
+    private Client client;
+
+*//*
+
 
 
     public Order(Long id, String product, String side, Double price, Integer quantity, Integer portfolioid) {
@@ -101,3 +113,4 @@ public class Order {
         this.created = created;
     }
 }
+*/
