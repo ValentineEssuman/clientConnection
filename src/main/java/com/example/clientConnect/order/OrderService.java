@@ -1,11 +1,11 @@
-/*
 package com.example.clientConnect.order;
 
 
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.client.ClientException;
+import com.example.clientConnect.client.ClientRepository;
+import com.example.clientConnect.client.ClientService;
 import com.sun.istack.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,35 +14,39 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ClientService clientService;
 
-    @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, ClientService clientService) {
         this.orderRepository = orderRepository;
+        this.clientService = clientService;
     }
 
     public List<Order> getOrders() {
         return orderRepository.findAll();
     };
 
-    //client created and orders
-    public Order creatOrder(Order order){
-
+    //client create order is an apikey
+    public Order createOrder(Order order){
         order = orderRepository.save(order);
-
+        // Alert: Report new Order to Reporting Section
         return order;
 
     }
 
- */
-/*   //add Order
-    //find successful orders
-    public Order add(@NotNull Order client) throws ClientException {
+    //find filled/successful orders
+    public List<Order> getSuccessOrder(String status) {
+        List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
+        return statusOrders;
+    }
 
-        return clientRepository.findClientByEmailAndPassword(client.getEmail(),client.getPassword()).orElseThrow(
-                ()-> new ClientException("Invalid credentials")
-        );
+    //findList of orders by clients
+    public List<Order> clientOrders(Long clientId) throws ClientException {
+        Client client = clientService.getClientById(clientId);
+        List<Order> orders = orderRepository.findAllByClient(client);
+        return orders;
+    }
 
-    }*//*
+
+
 
 }
-*/

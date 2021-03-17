@@ -29,7 +29,6 @@ public class ClientService {
         client = clientRepository.save(client);
         return client;
 
-
     }
 
     //Login Client
@@ -47,4 +46,5 @@ public class ClientService {
                 () -> new ClientException("Client with "+id+"does not exist")
         );
     }
+
 }
