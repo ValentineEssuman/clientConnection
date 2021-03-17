@@ -1,7 +1,5 @@
 package com.example.clientConnect.client;
 
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.order.OrderRepository;
 import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
