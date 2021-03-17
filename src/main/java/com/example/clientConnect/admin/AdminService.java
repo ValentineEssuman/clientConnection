@@ -2,8 +2,6 @@ package com.example.clientConnect.admin;
 
 import com.example.clientConnect.client.AdminException;
 import com.example.clientConnect.client.Client;
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.order.OrderRepository;
 import com.sun.istack.NotNull;
 import org.hibernate.hql.internal.ast.tree.IndexNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +38,27 @@ public class AdminService {
 
     }
 
+    // not sure of the use of these but these since the query will not interact with JPA
+    public String getClientOrder() {
+        return "all orders";
+    }
+
+    public String getSuccessOrders() {
+        return "all succesfull orders";
+    }
+
+    public String getFailedOrders() {
+        return "failed orders";
+    }
+
+
+    // get from JPA or from
+    public String getOpenTrades() {
+        return "Open Orders";
+    }
+
+    public String getPendingTrades() {
+        return "Pending Orders ";
+    }
 }
 

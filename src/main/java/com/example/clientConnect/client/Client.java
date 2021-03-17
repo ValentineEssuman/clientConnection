@@ -1,6 +1,6 @@
 package com.example.clientConnect.client;
 
-import com.example.clientConnect.order.Order;
+
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.transaction.annotation.Transactional;
 
