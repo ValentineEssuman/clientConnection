@@ -41,11 +41,11 @@ public class ClientController {
     @PostMapping("/login")
     public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException {
 
-
         client = clientService.loginClient(client);
 
         return  new ResponseEntity<>(client, HttpStatus.OK);
     }
+
 
 
 //    @PostMapping("/validation")
