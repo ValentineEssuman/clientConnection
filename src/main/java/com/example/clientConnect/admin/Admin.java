@@ -1,25 +1,28 @@
-package com.example.clientConnect.client;
+package com.example.clientConnect.admin;
 
-import com.example.clientConnect.order.Order;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+//main idea Abstract class appuser with subclasses client and Admin
+
+//however in following your suggestion we get the code below
+
 
 @Entity
 @Table
 @Transactional
-public class Client {
+public class Admin {
     @Id
     @SequenceGenerator(
-            name="client_sequence", sequenceName = "client_sequence",
+            name="admin_sequence", sequenceName = "admin_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "client_sequence"
+            generator = "admin_sequence"
     )
+
 
     @Column(nullable = false,updatable = false)
     private Long id;
@@ -30,27 +33,16 @@ public class Client {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
-    private Integer balance = 0;
     private LocalDate created_at = LocalDate.now();
 
-/*
-    @OneToMany
-    @joinColumn(name="id")
-    private Order order;
-*/
-
-
-    public Client() {
-    }
-
-    public Client( String name, String email, String password, Integer balance) {
+    public Admin(String name, String email, String password, LocalDate created_at) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.balance = balance;
+        this.created_at = created_at;
     }
 
-    public Client(String email, String password) {
+    public Admin(String email, String password) {
         this.email = email;
         this.password = password;
     }
@@ -58,11 +50,6 @@ public class Client {
     public Long getId() {
         return id;
     }
-
-//    public void setId(Long id) {
-//        this.id = ide;
-//    }
-
 
     public String getName() {
         return name;
@@ -86,17 +73,5 @@ public class Client {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Integer getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Integer balance) {
-        this.balance = balance;
-    }
-
-    public LocalDate getCreated_at() {
-        return created_at;
     }
 }
