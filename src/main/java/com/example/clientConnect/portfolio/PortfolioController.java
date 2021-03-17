@@ -29,9 +29,7 @@ public class PortfolioController {
     @GetMapping("/all/{client_id}")
     public ResponseEntity<List<Portfolio>> getPortfolios(@PathVariable("client_id") Long client_id) throws ClientException {
 
-        Client client = clientService.getClientById(client_id);
-
-        List<Portfolio> portfolios= portfolioService.getPortfolios(client);
+        List<Portfolio> portfolios= portfolioService.getPortfoliosByClient(client_id);
 
         return  new ResponseEntity<>(portfolios, HttpStatus.OK);
     }

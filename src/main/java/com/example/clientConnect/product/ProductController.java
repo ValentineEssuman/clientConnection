@@ -23,6 +23,7 @@ public class ProductController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts(){
+
         List<Product> products = productService.getAllProducts();
 
         return new ResponseEntity<>(products, HttpStatus.OK);
@@ -33,9 +34,7 @@ public class ProductController {
     @GetMapping("portfolio/{portfolio_id}")
     public ResponseEntity<List<Product>> getAllProductsForPortfolio(@PathVariable Long portfolio_id) throws PortfolioException {
 
-        Portfolio portfolio = portfolioService.getPortfolio(portfolio_id);
-
-        List<Product> products = productService.getAllProductsForPortfolio(portfolio);
+        List<Product> products = productService.getAllProductsForPortfolio(portfolio_id);
 
         return new ResponseEntity<>(products, HttpStatus.OK);
 
