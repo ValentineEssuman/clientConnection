@@ -1,6 +1,7 @@
 package com.example.clientConnect.portfolio;
 
 import com.example.clientConnect.client.Client;
+import com.example.clientConnect.order.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -27,6 +28,10 @@ public class Portfolio {
 
     @OneToOne
     private Client client;
+
+    // client can place many orders
+    @OneToMany
+    private Order order;
 
     private LocalDate created_at = LocalDate.now();
 

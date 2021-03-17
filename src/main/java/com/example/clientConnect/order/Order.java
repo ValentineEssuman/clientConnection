@@ -1,4 +1,3 @@
-/*
 package com.example.clientConnect.order;
 
 import com.example.clientConnect.client.Client;
@@ -36,16 +35,8 @@ public class Order {
     @Column(nullable = false, updatable = false)
    private Integer portfolioid ;
    public  LocalDate created = LocalDate.now();
-
-
-*/
-/*
-
-    @ManyToOne(mappedBy="Client")
+    @ManyToOne
     private Client client;
-
-*//*
-
 
 
     public Order(Long id, String product, String side, Double price, Integer quantity, Integer portfolioid) {
@@ -113,4 +104,3 @@ public class Order {
         this.created = created;
     }
 }
-*/
