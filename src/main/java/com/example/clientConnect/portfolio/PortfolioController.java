@@ -50,7 +50,7 @@ public class PortfolioController {
 
         Client client = clientService.getClientById(client_id);
 
-        portfolio.setClient(client);
+        /*portfolio.setClient(client);*/
 
         portfolio =  portfolioService.addPortfolio(portfolio);
 

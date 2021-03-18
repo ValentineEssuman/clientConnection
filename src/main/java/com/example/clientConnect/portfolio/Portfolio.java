@@ -26,21 +26,21 @@ public class Portfolio {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
+ /*   @OneToOne
     private Client client;
 
     // client can place many orders
     @OneToMany
-    private Order order;
+    private Order order;*/
 
     private LocalDate created_at = LocalDate.now();
 
-    public Portfolio(String name,
-                     Client client) {
-        this.name = name;
-        this.client = client;
-
-    }
+//    public Portfolio(String name,
+//                     Client client) {
+//        this.name = name;
+//        this.client = client;
+//
+//    }
 
     public Portfolio(String name) {
         this.name = name;
@@ -62,13 +62,13 @@ public class Portfolio {
         this.name = name;
     }
 
-    public Client getClient() {
+/*    public Client getClient() {
         return client;
-    }
+    }*/
 
-    public void setClient(Client client) {
+/*    public void setClient(Client client) {
         this.client = client;
-    }
+    }*/
 
     public LocalDate getCreated_at() {
         return created_at;

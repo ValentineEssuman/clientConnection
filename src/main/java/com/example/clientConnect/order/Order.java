@@ -33,10 +33,10 @@ public class Order {
    private Integer quantity;
    private Integer validStatus = null;
     @Column(nullable = false, updatable = false)
-   private Integer portfolioid ;
+   private Integer portfolioid;
    public  LocalDate created = LocalDate.now();
-    @ManyToOne
-    private Client client;
+/*    @ManyToOne
+    private Client client;*/
 
 
     public Order(Long id, String product, String side, Double price, Integer quantity, Integer portfolioid) {

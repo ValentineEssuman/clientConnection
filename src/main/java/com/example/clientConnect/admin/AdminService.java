@@ -5,9 +5,11 @@ import com.example.clientConnect.client.Client;
 import com.sun.istack.NotNull;
 import org.hibernate.hql.internal.ast.tree.IndexNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AdminService {
 
     private final AdminRepository adminRepository;

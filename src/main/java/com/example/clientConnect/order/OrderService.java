@@ -3,7 +3,6 @@ package com.example.clientConnect.order;
 
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.client.ClientException;
-import com.example.clientConnect.client.ClientRepository;
 import com.example.clientConnect.client.ClientService;
 import com.sun.istack.NotNull;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,6 @@ public class OrderService {
         return order;
 
     }
-
     //find filled/successful orders
     public List<Order> getSuccessOrder(String status) {
         List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
