@@ -31,12 +31,12 @@ public class Order {
    private Double price;
     @Column(nullable = false, updatable = false)
    private Integer quantity;
-   private Integer validStatus = null;
+   private Integer validStatus;
     @Column(nullable = false, updatable = false)
    private Integer portfolioid;
    public  LocalDate created = LocalDate.now();
-/*    @ManyToOne
-    private Client client;*/
+    //@ManyToOne
+    private Client client;
 
 
     public Order(Long id, String product, String side, Double price, Integer quantity, Integer portfolioid) {

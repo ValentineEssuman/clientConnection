@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
 import java.io.DataInput;
@@ -33,10 +34,17 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
+    @GetMapping("/{clientId}")
+    public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId,@RequestBody Client client) throws ClientException{
+        Client clients = clientService.getClientById(clientId);
+        return new ResponseEntity<>(clients, HttpStatus.OK);
+    }
+
+
     @PostMapping("/register")
     public ResponseEntity<Client> registerClient(@RequestBody Client client){
 
-        client = clientService.registerClient(client);
+        client = clientService.addClient(client);
 
         return  new ResponseEntity<>(client, HttpStatus.OK);
     }
@@ -49,28 +57,17 @@ public class ClientController {
         return  new ResponseEntity<>(client, HttpStatus.OK);
     }
 
-
-
-//    @PostMapping("/validation")
-//    public Object registerNewStudent(@RequestBody Object message){
-//        String url = "http://localhost:8082/validation";
-//        RestTemplate restTemplate = new RestTemplate();
-//        Object messObject = restTemplate.postForObject(url, message, Object.class);
-//        return new ResponseEntity<Object>(messObject, HttpStatus.MULTI_STATUS.OK);
-//    }
-
-
-/*    @PostMapping("/submit-order")
-    public String submitOrder(@RequestBody JSONParser orderData) throws IOException {
-        //final String DB_API = "caknncands";
+    @PostMapping("/submit-order")
+    public ResponseEntity<Object> submitOrder(@RequestBody JSONParser orderData) throws IOException {
+        final String validationService_url = "http://trade-engine/order-validation-service";
         ObjectMapper mapper = new ObjectMapper();
         //Reader readData = new StringReader(orderData);
         //Order clientOrder = mapper.readValue(readData, Order.class);
+        RestTemplate restTemplate = new RestTemplate();
         Order clientOrder = mapper.readValue((DataInput) orderData, Order.class);
-
-        //RestTemplate restTemplate = new RestTemplate();
-        return "DOne";
-        }*/
+        Object messObject = restTemplate.postForObject(validationService_url, clientOrder, Object.class);
+        return new ResponseEntity<Object>(messObject, HttpStatus.MULTI_STATUS.OK);
+    }
 
 
 

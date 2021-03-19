@@ -2,12 +2,13 @@ package com.example.clientConnect.order;
 
 
 import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.client.ClientService;
-import com.sun.istack.NotNull;
+import com.example.clientConnect.portfolio.Portfolio;
+import com.example.clientConnect.portfolio.PortfolioException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -20,9 +21,14 @@ public class OrderService {
         this.clientService = clientService;
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     };
+
+    public List<Order> getAllOrders(Client client) {
+        return orderRepository.findAllByClient(client);
+    }
+
 
     //client create order is an apikey
     public Order createOrder(Order order){
@@ -31,18 +37,25 @@ public class OrderService {
         return order;
 
     }
-    //find filled/successful orders
-    public List<Order> getSuccessOrder(String status) {
-        List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
-        return statusOrders;
+
+    public Order getOrder(Long id) throws OrderException {
+        return orderRepository.findById(id).orElseThrow(
+                ()-> new OrderException("Order "+id+" does not exist")
+        );
     }
 
-    //findList of orders by clients
-    public List<Order> clientOrders(Long clientId) throws ClientException {
+/*    //find filled/successful orders
+    public List<Order> getSuccessOrder( status) {
+        List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
+        return statusOrders;
+    }*/
+
+ /*   //findList of orders by clients
+    public List<Order> clientOrdersbyId(Long clientId) throws OrderException{
         Client client = clientService.getClientById(clientId);
         List<Order> orders = orderRepository.findAllByClient(client);
         return orders;
-    }
+    }*/
 
 
 
