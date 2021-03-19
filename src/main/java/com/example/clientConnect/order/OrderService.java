@@ -48,9 +48,9 @@ public class OrderService {
     public List<Order> getSuccessOrder( status) {
         List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
         return statusOrders;
-    }*/
+    }
 
- /*   //findList of orders by clients
+    //findList of orders by clients
     public List<Order> clientOrdersbyId(Long clientId) throws OrderException{
         Client client = clientService.getClientById(clientId);
         List<Order> orders = orderRepository.findAllByClient(client);
