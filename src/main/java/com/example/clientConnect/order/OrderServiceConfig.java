@@ -28,7 +28,7 @@ public class OrderServiceConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("OrderPort");
         wsdl11Definition.setLocationUri("/ws");
-        wsdl11Definition.setTargetNamespace("https://order-validation-service.herokuapp.com/ws");
+        wsdl11Definition.setTargetNamespace("http://trade-engine/order-validation-service/");
         wsdl11Definition.setSchema(countriesSchema);
         return wsdl11Definition;
     }
