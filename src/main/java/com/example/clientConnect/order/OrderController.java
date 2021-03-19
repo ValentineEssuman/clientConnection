@@ -95,20 +95,6 @@ public class OrderController {
         return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
     }
 
-/*    public void sendOrder(@RequestPayload Order odr) throws JsonProcessingException {
-        GetOrderRequest request = new GetOrderRequest();
-        request.setOrder(odr);
-        RestTemplate restTemplate = new RestTemplate();
-        XmlMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(request);
-        System.out.println(xml);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_XML);
-        xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://trade-engine/order-validation-service\"><soapenv:Header/><soapenv:Body>"+xml+"</soapenv:Body></soapenv:Envelope>";
-        HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
-        ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
-        System.out.println(answer);
-    }*/
 
 
 }
