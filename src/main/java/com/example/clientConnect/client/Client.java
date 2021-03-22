@@ -1,27 +1,30 @@
 package com.example.clientConnect.client;
 
 
+
+import com.example.clientConnect.order.Order;
+import com.example.clientConnect.portfolio.Portfolio;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table
-@Transactional
+//@Transactional
 public class Client {
     @Id
-    @SequenceGenerator(
+/*    @SequenceGenerator(
             name="client_sequence", sequenceName = "client_sequence",
             allocationSize = 1
-    )
+    )*/
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "client_sequence"
+            strategy = GenerationType.AUTO
     )
 
-    @Column(nullable = false,updatable = false)
+
     private Long id;
     @Column(nullable = false)
     private String name;
@@ -31,6 +34,7 @@ public class Client {
     private String password;
     @Column(nullable = false)
     private Integer balance = 0;
+    @Column(nullable = false)
     private LocalDate created_at = LocalDate.now();
 
 /*
@@ -38,6 +42,13 @@ public class Client {
     @joinColumn(name="id")
     private Order order;
 */
+
+    @OneToMany(mappedBy="client",cascade = CascadeType.ALL)
+    private List<Portfolio> portfolios;
+
+    @OneToMany(mappedBy="client",cascade = CascadeType.ALL)
+    private List<Order> orders;
+
 
 
     public Client() {

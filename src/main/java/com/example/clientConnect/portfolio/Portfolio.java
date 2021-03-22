@@ -2,36 +2,38 @@ package com.example.clientConnect.portfolio;
 
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.order.Order;
+import com.example.clientConnect.product.Product;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table
-@Transactional
+//@Transactional
 public class Portfolio {
 
     @Id
-    @SequenceGenerator(
+/*    @SequenceGenerator(
             name="portfolio_sequence", sequenceName = "portfolio_sequence",
             allocationSize = 1
-    )
+    )*/
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "portfolio_sequence"
+            strategy = GenerationType.AUTO
     )
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clientID")
     private Client client;
 
-    // client can place many orders
-    @OneToMany
-    private Order order;
+    // client can place orders to make portforlio
+    @OneToMany(mappedBy="portfolio",cascade = CascadeType.ALL)
+    private List<Product> products;
 
     private LocalDate created_at = LocalDate.now();
 

@@ -1,5 +1,6 @@
 package com.example.clientConnect.product;
 
+import com.example.clientConnect.client.Client;
 import com.example.clientConnect.portfolio.Portfolio;
 import com.sun.istack.NotNull;
 
@@ -26,7 +27,8 @@ public class Product {
     @NotNull
     private String name;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "portfolioID")
     private Portfolio portfolio;
 
     @Column(nullable = false)

@@ -1,8 +1,10 @@
 package com.example.clientConnect.client;
 
+
+import com.example.clientConnect.order.Order;
+import com.example.clientConnect.portfolio.PortfolioException;
 import com.sun.istack.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +26,18 @@ public class ClientService {
     }
 
     //Register new client
-    public Client registerClient(Client client){
+    public Client addClient(Client client){
 
         client = clientRepository.save(client);
         return client;
 
+    }
+
+    public Client getClient(Long id) throws ClientException {
+
+        return clientRepository.findById(id).orElseThrow(
+                ()-> new ClientException("Client id "+id+" does not exist")
+        );
     }
 
     //Login Client
@@ -40,7 +49,7 @@ public class ClientService {
 
     }
 
-    public Client getClientById(@NotNull Long id) throws ClientException {
+    public Client getClientById(Long id) throws ClientException {
 
         return clientRepository.findById(id).orElseThrow(
                 () -> new ClientException("Client with "+id+"does not exist")
