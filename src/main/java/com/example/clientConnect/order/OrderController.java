@@ -99,12 +99,12 @@ public class OrderController {
         return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
     }
 
-    public void sendOrder(@RequestBody  orderjson) throws JsonProcessingException {
+/*    public void sendOrder(@RequestBody  orderjson) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Object clientOrderstr = mapper.writeValueAsObject(orderjson);
         RestTemplate restTemplate = new RestTemplate();
 
-    }
+    }*/
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
     public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {

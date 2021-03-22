@@ -111,6 +111,15 @@
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>2.11.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>
