@@ -68,7 +68,7 @@ public class OrderController {
 
         Client client = clientService.getClientById(client_id);
 
-        *//*portfolio.setClient(client);*//*
+        portfolio.setClient(client);
 
         portfolio =  portfolioService.addPortfolio(portfolio);
 
@@ -77,7 +77,7 @@ public class OrderController {
 
 
 
-    //Submitting Order Soap Service Endpoints
+    //Submitting Order Rest Endpoints
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getOrderRequest")
     public ResponseEntity<Object> submitOrderSoap(@RequestPayload Order orderjson) throws JsonProcessingException {
         String url = "https://order-validation-service.herokuapp.com/ws";
@@ -98,17 +98,16 @@ public class OrderController {
         Object orderMessage = restTemplate.postForObject(url, orderRequest, Object.class);
         return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
     }
-/*
+
     public void sendOrder(@RequestBody  orderjson) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Object clientOrderstr = mapper.writeValueAsObject(orderjson);
         RestTemplate restTemplate = new RestTemplate();
 
     }
-    */
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
-    public void sendOrder(@RequestPayload  GetOrderRequest odr) throws JsonProcessingException {
+    public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         XmlMapper xmlMapper = new XmlMapper();
         String xml = xmlMapper.writeValueAsString(odr);
