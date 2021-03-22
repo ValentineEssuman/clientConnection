@@ -9,19 +9,17 @@ import java.time.LocalDate;
 //Trading order from client
 @Entity
 @Table
-@Transactional
+//@Transactional
 public class Order {
     @Id
-    @SequenceGenerator(
+/*    @SequenceGenerator(
             name="order_sequence", sequenceName = "order_sequence",
             allocationSize = 1
-    )
+    )*/
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "order_sequence"
+            strategy = GenerationType.AUTO
     )
 
-    @Column(nullable = false,updatable = false)
    private Long id;
     @Column(nullable = false)
    private String product;
@@ -35,8 +33,13 @@ public class Order {
     @Column(nullable = false, updatable = false)
    private Integer portfolioid;
    public  LocalDate created = LocalDate.now();
+
     //@ManyToOne
+    //@Column(nullable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clientID")
     private Client client;
+
 
 
     public Order(Long id, String product, String side, Double price, Integer quantity, Integer portfolioid) {
