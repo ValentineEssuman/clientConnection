@@ -4,8 +4,6 @@ package com.example.clientConnect.client;
 
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.portfolio.Portfolio;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -33,7 +31,7 @@ public class Client {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
-    private Integer balance = 0;
+    private double balance = 0;
     @Column(nullable = false)
     private LocalDate created_at = LocalDate.now();
 
@@ -48,8 +46,6 @@ public class Client {
 
     @OneToMany(mappedBy="client",cascade = CascadeType.ALL)
     private List<Order> orders;
-
-
 
     public Client() {
     }
@@ -99,7 +95,7 @@ public class Client {
         this.password = password;
     }
 
-    public Integer getBalance() {
+    public double getBalance() {
         return balance;
     }
 
@@ -110,4 +106,30 @@ public class Client {
     public LocalDate getCreated_at() {
         return created_at;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                ", created_at=" + created_at +
+                ", portfolios=" + portfolios +
+                ", orders=" + orders +
+                '}';
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

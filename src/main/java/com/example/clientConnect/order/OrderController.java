@@ -18,10 +18,10 @@ import java.io.DataInput;
 import java.io.IOException;
 import java.util.List;
 
-@Endpoint
+//@Endpoint
 //Uncommment if you want to work with the rest
-//@RestController
-//@RequestMapping(path="api/order")
+@RestController
+@RequestMapping(path="api/order")
 public class OrderController {
 
     private static final String NAMESPACE_URI = "http://trade-engine/order-validation-service";
@@ -99,12 +99,17 @@ public class OrderController {
         return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
     }
 
-/*    public void sendOrder(@RequestBody  orderjson) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Object clientOrderstr = mapper.writeValueAsObject(orderjson);
-        RestTemplate restTemplate = new RestTemplate();
 
-    }*/
+    @PostMapping(path="/client")
+   public void sendOrder(@RequestBody String  orderjson) throws JsonProcessingException {
+        System.out.println(orderjson);
+        ObjectMapper mapper = new ObjectMapper();
+        String clientOrderstr = mapper.writeValueAsString(orderjson);
+        RestTemplate restTemplate = new RestTemplate();
+        Order clientOrder = mapper.readValue(orderjson, Order.class);
+        Object messObject = restTemplate.postForObject(NAMESPACE_URI, clientOrder, Object.class);
+        System.out.println(messObject);
+    }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
     public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {

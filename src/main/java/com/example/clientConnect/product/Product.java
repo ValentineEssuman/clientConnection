@@ -14,13 +14,13 @@ import java.time.LocalDate;
 public class Product {
 
     @Id
-    @SequenceGenerator(
+/*    @SequenceGenerator(
             name="product_sequence", sequenceName = "product_sequence",
             allocationSize = 1
-    )
+    )*/
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "product_sequence"
+            strategy = GenerationType.SEQUENCE
+            //generator = "product_sequence"
     )
     private Long id;
 

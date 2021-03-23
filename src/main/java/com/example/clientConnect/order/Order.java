@@ -37,7 +37,7 @@ public class Order {
     //@ManyToOne
     //@Column(nullable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientID")
+    @JoinColumn(name = "clientId")
     private Client client;
 
 

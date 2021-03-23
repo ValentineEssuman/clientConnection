@@ -33,12 +33,12 @@ public class ClientService {
 
     }
 
-    public Client getClient(Long id) throws ClientException {
+/*    public Client getClient(Long id) throws ClientException {
 
         return clientRepository.findById(id).orElseThrow(
                 ()-> new ClientException("Client id "+id+" does not exist")
         );
-    }
+    }*/
 
     //Login Client
     public Client loginClient(@NotNull Client client) throws ClientException {
