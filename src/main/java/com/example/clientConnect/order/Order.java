@@ -51,8 +51,13 @@ public class Order {
         this.portfolioid = portfolioid;
     }
 
+
     public String getProduct() {
         return product;
+    }
+
+    public String getClient() {
+        return "CLient Nunana";
     }
 
     public void setProduct(String product) {
