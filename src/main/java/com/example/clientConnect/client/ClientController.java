@@ -3,13 +3,16 @@ package com.example.clientConnect.client;
 
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.order.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import trade_engine.order_validation_service.GetOrderRequest;
 
 
 import java.io.DataInput;
@@ -60,7 +63,36 @@ public class ClientController {
         return  new ResponseEntity<>(client, HttpStatus.OK);
     }
 
-    //submitting order via rest
+
+    @PostMapping(path="/client")
+    public void sendOrder(@RequestBody Order orderjson) throws JsonProcessingException {
+        System.out.println(orderjson);
+        trade_engine.order_validation_service.Order neworder = new trade_engine.order_validation_service.Order();
+
+        neworder.setClientId(1);
+        neworder.setProduct(orderjson.getProduct());
+        neworder.setSide(orderjson.getSide());
+        neworder.setQuantity(orderjson.getQuantity());
+        neworder.setClientId(2);
+        neworder.setPortfolioId(orderjson.getPortfolioid());
+
+        GetOrderRequest orderRequest = new GetOrderRequest();
+        orderRequest.setOrder(neworder);
+        RestTemplate restTemplate = new RestTemplate();
+        XmlMapper xmlMapper = new XmlMapper();
+        String xml = xmlMapper.writeValueAsString(orderRequest);
+        System.out.println(xml);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_XML);
+        xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://trade-engine/order-validation-service\"><soapenv:Header/><soapenv:Body>"+xml+"</soapenv:Body></soapenv:Envelope>";
+        HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
+        ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
+        System.out.println(answer);
+    }
+
+
+
+/*    //submitting order via rest
     @PostMapping("/submit-order")
     public ResponseEntity<Object> submitOrder(@RequestBody JSONParser orderData) throws IOException {
         final String validationService_url = "http://trade-engine/order-validation-service";
@@ -72,7 +104,7 @@ public class ClientController {
         Object messObject = restTemplate.postForObject(validationService_url, clientOrder, Object.class);
         System.out.println(messObject);
         return new ResponseEntity<Object>(messObject, HttpStatus.MULTI_STATUS.OK);
-    }
+    }*/
 
 
 
