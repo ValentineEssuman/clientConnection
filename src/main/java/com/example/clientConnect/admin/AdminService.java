@@ -15,10 +15,8 @@ public class AdminService {
     private final AdminRepository adminRepository;
 
 
-    @Autowired
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
-
     }
 
     public List<Admin> findAdmins(){
@@ -62,5 +60,9 @@ public class AdminService {
     public String getPendingTrades() {
         return "Pending Orders ";
     }
+
+
+
+
 }
 
