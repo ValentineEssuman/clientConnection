@@ -1,10 +1,7 @@
 package com.example.clientConnect.order;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.client.ClientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +10,6 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import trade_engine.order_validation_service.GetOrderRequest;
-
-import java.util.List;
 
 @Endpoint
 //Uncommment if you want to work with the rest
@@ -34,24 +29,23 @@ public class OrderController {
 
     //get all client order
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        return new ResponseEntity<>(orderService.getAllOrders(),HttpStatus.OK);
+    public Order[] getAllOrders(){
+        return orderService.getAllOrders();
     }
+    // login a client
 
+    //getting Orders by clientID
     @GetMapping("/all/{clientid}")
-    public ResponseEntity<List<Order>> getOrders(@PathVariable("clientid") Long clientid) throws ClientException {
-        Client client = clientService.getClientById(clientid);
-        List<Order> clientOrders = orderService.getAllClientOrders(client);
-        return  new ResponseEntity<>(clientOrders, HttpStatus.OK);
+    public ResponseEntity<Order> getAllClientOrders(@PathVariable("clientid") Long clientid) throws OrderException{
+        return orderService.getAllClientOrders(clientid);
     }
 
+    //getting Orders by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
-
-        Order orders = orderService.getOrder(id);
-        return  new ResponseEntity<>(orders, HttpStatus.OK);
+    public Order getOrder(@RequestParam Long id) throws OrderException {
+        return orderService.getOrder(id);
     }
-
+    //add Order based
     @PostMapping("/ordersubmission") //new order
     public ResponseEntity<Order> addOrder(@RequestBody Order order) throws OrderException {
         order = orderService.createOrder(order);

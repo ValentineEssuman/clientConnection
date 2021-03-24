@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import trade_engine.order_validation_service.GetOrderRequest;
@@ -36,25 +37,22 @@ public class ClientController {
 
     //getting all clients
     @GetMapping("/all")
-    public ResponseEntity<List<Client>> getClients(){
-        List<Client> clients = clientService.getClients();
-        return new ResponseEntity<>(clients, HttpStatus.OK);
+    public Client[] getClients(){
+        return clientService.getClients();
     }
 
     // login a client
     @PostMapping("/login")
     public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException {
-        client = clientService.loginClient(client);
-        return  new ResponseEntity<>(client, HttpStatus.OK);
+        ResponseEntity<Client> oldclient  = clientService.loginClient(client);
+        return new ResponseEntity<> (oldclient.getBody(), HttpStatus.ACCEPTED);
     }
 
     //creating a new client
     @PostMapping("/register")
-    public ResponseEntity<Client> registerClient(@RequestBody Client client){
-
-        client = clientService.addNewClient(client);
-
-        return  new ResponseEntity<>(client, HttpStatus.OK);
+    public void registerClient(@RequestBody Client client){
+        clientService.addNewClient(client);
+        //Redis log creating of new clients
     }
 
     @DeleteMapping("/unregister/{clientId}")
@@ -65,30 +63,27 @@ public class ClientController {
     //getting client by ID
     @GetMapping("/{clientId}")
     public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId,@RequestBody Client client) throws ClientException{
-        Client clients = clientService.getClientById(clientId);
-        return new ResponseEntity<>(clients, HttpStatus.OK);
+        return clientService.getClientById(clientId);
     }
 
     @PostMapping("/add/{client_id}")
     public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id, @RequestBody Portfolio portfolio) throws ClientException {
 
-        Client client = clientService.getClientById(client_id);
+      return portfolioService.addPortfolio(portfolio);
 
-        //portfolio.setClient(client);
-
-        portfolio =  portfolioService.addPortfolio(portfolio);
-
-        return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
+       // return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/update/{clientId}")
-    public void updateClient(
+    public ResponseEntity<Client> updateClient(
             @PathVariable("clientId") Long clientId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String password,
             @RequestParam(required = false) Double balance
     ) throws ClientException {
-        clientService.updateClient(clientId, name, password, balance);
+       Client updatedClient = new Client(name, password, balance);
+        clientService.updateClient(updatedClient);
+        return new ResponseEntity<> (updatedClient, HttpStatus.ACCEPTED);
     }
 
 
@@ -102,7 +97,7 @@ public class ClientController {
         neworder.setSide(orderjson.getSide());
         neworder.setQuantity(orderjson.getQuantity());
         neworder.setClientId(2);
-        neworder.setPortfolioId(orderjson.getPortfolioid());
+        neworder.setPortfolioId(orderjson.getPortfolioId());
 
         GetOrderRequest orderRequest = new GetOrderRequest();
         orderRequest.setOrder(neworder);

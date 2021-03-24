@@ -29,38 +29,7 @@ public class ProductController {
 
     }
 
-    //Getting all products with portfolio
-    @GetMapping("portfolio/{portfolio_id}")
-    public ResponseEntity<List<Product>> getAllProductsForPortfolio(@PathVariable Long portfolio_id) throws PortfolioException {
 
-        Portfolio portfolio = portfolioService.getPortfolio(portfolio_id);
-
-        List<Product> products = productService.getAllProductsForPortfolio(portfolio);
-
-        return new ResponseEntity<>(products, HttpStatus.OK);
-
-    }
-
-    //Getting just the Product
-    @GetMapping("{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) throws ProductException {
-
-        Product product = productService.getProduct(id);
-
-        return new ResponseEntity<>(product,HttpStatus.OK);
-    }
-
-    @PostMapping("/add/{portfolio_id}")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product, @PathVariable Long portfolio_id) throws PortfolioException {
-
-        Portfolio portfolio = portfolioService.getPortfolio(portfolio_id);
-
-        product.setPortfolio(portfolio);
-
-        product = productService.addProduct(product);
-
-        return new ResponseEntity<>(product,HttpStatus.CREATED);
-    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws ProductException {

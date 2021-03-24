@@ -7,55 +7,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/portfolio")
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
-    private final ClientService clientService;
 
     public PortfolioController(PortfolioService portfolioService, ClientService clientService) {
         this.portfolioService = portfolioService;
-        this.clientService = clientService;
     }
 
+    //get all portfolios
     @GetMapping("/all")
-    public ResponseEntity<List<Portfolio>> getPortfolios(){
-        return new ResponseEntity<>(portfolioService.getPortfolios(),HttpStatus.OK);
+    public  Portfolio[] getPortfolios(){
+        return portfolioService.getPortfolios();
     }
 
-    @GetMapping("/all/{client_id}")
-    public ResponseEntity<List<Portfolio>> getPortfolios(@PathVariable("client_id") Long client_id) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        List<Portfolio> portfolios= portfolioService.getPortfolios(client);
-
-        return  new ResponseEntity<>(portfolios, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Portfolio> getPortfolio(@RequestParam Long id) throws  PortfolioException {
-
-        Portfolio portfolio= portfolioService.getPortfolio(id);
-
-        return  new ResponseEntity<>(portfolio, HttpStatus.OK);
-    }
-
-
+    //add portfolio based on client id
     @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        /*portfolio.setClient(client);*/
-
-        portfolio =  portfolioService.addPortfolio(portfolio);
-
+    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws PortfolioException {
+        portfolioService.addPortfolio(portfolio);
         return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
+
+    // get porfolio based on client id
+    @GetMapping("/{client_id}")
+    public ResponseEntity<Portfolio> getPortfolios(@PathVariable("client_id") Long client_id) throws PortfolioException {
+        return portfolioService.getPortfolioById(client_id);
+    }
+
+
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePortfolio(@PathVariable("id") Long id){

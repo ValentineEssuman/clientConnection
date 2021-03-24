@@ -2,13 +2,17 @@ package com.example.clientConnect.client;
 
 
 import com.example.clientConnect.order.Order;
-import com.example.clientConnect.portfolio.PortfolioException;
+import com.example.clientConnect.order.OrderException;
 import com.sun.istack.NotNull;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,76 +20,62 @@ import java.util.Optional;
 public class ClientService {
 
 
-    private final ClientRepository clientRepository;
-
-
-    public ClientService(ClientRepository clientRepository) {
-
-        this.clientRepository = clientRepository;
-    }
-
-
     //get all clients
-    public List<Client> getClients() {
-        return clientRepository.findAll();
+    public Client[] getClients() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Client[]> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/all", Client[].class);
+
+        return responseEntity.getBody();
     }
 
     //Register new client
-    public Client addNewClient(Client client) {
-        Optional<Client> clientOptional = clientRepository.findClientByEmail(client.getEmail());
-        if (clientOptional.isPresent()) {
-            client = clientRepository.save(client);
-        }
-        return client;
+    public void addNewClient(Client client) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/register", client, Client.class);
+
     }
 
     //Login Client
-    public Client loginClient(@NotNull Client client) throws ClientException {
+    public ResponseEntity<Client> loginClient(@NotNull Client client) throws ClientException {
 
-        return clientRepository.findClientByEmailAndPassword(client.getEmail(), client.getPassword()).orElseThrow(
-                () -> new ClientException("Invalid credentials")
-        );
-    }
-
-    public Client getClient(Client client) throws ClientException {
-
-        return clientRepository.findById(client.getId()).orElseThrow(
-                () -> new ClientException("Client id " + client.getId() + " does not exist")
-        );
-    }
-
-    public Client getClientById(Long id) throws ClientException {
-
-        return clientRepository.findById(id).orElseThrow(
-                () -> new ClientException("Client with " + id + "does not exist")
-        );
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/login", client, Client.class);
+        return new ResponseEntity<Client>(client, HttpStatus.ACCEPTED);
     }
 
     //deleting a client
-    public void deleteClient(Long clientid) {
-        boolean exists = clientRepository.existsById(clientid);
-        if (!exists) {
-            throw new IllegalStateException("Student with id: " + clientid + " does not exist.");
-        }
-        clientRepository.deleteById(clientid);
+    public ResponseEntity<String> deleteClient(Long clientid) {
+        //boolean exists = clientRepository.existsById(clientid);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/client/uregister/" + clientid);
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
-    @Transactional
-    public void updateClient(Long clientId, String name, String password, Double balance) {
-        Client client = clientRepository.findClientById(clientId).orElseThrow(() -> new IllegalStateException("Student with id " + clientId + " does not exist."));
 
-        if (name != null && name.length() > 0 && !Objects.equals(client.getName(), name)) {
-            client.setName(name);
-        }
-
-        if (password != null && password.length() > 0 && !Objects.equals(client.getPassword(), password)) {
-            Optional<Client> clientOptional = clientRepository.findClientById(clientId);
-            client.setPassword(password);
-        }
-
-        if (balance != null && !Objects.equals(client.getBalance(), balance)) {
-            client.setBalance(balance);
-        }
-
+    public ResponseEntity<Client> getClientById(Long clientid) throws ClientException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Client> gottenClient = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", clientid, Client.class);
+        return new ResponseEntity<Client>(gottenClient.getBody(), HttpStatus.ACCEPTED);
     }
+
+    public ResponseEntity<String> updateClient(Client updatedclient) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put("https://tradeenginetestdb.herokuapp.com/api/v1/client/update", updatedclient, Client.class);
+        return new ResponseEntity<String>("Updated", HttpStatus.ACCEPTED);
+    }
+
 }
+
+/*    @GetMapping("/{id}")
+    public Client getClient(Client client) throws ClientException {
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
+
+        Order orders = orderService.getOrder(id);
+        return  new ResponseEntity<>(orders, HttpStatus.OK);
+    }*/
+
