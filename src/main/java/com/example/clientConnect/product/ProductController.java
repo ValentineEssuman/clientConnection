@@ -69,4 +69,14 @@ public class ProductController {
 
         return new ResponseEntity<>("Product successfully deleted",HttpStatus.ACCEPTED);
     }
+
+    @PutMapping("/update/{productId}")
+    public void updateProduct(
+            @PathVariable("productId") Long productId,
+            @RequestParam(required = false) Integer quantity,
+            @RequestParam(required = false) Double lastTradedPrice,
+            @RequestParam(required = false) String lastTradedSide
+    ) throws IllegalStateException {
+        productService.updateProduct(productId,quantity,lastTradedPrice,lastTradedSide);
+    }
 }

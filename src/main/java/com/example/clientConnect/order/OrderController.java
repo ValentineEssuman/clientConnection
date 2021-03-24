@@ -14,8 +14,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import trade_engine.order_validation_service.GetOrderRequest;
 
-import java.io.DataInput;
-import java.io.IOException;
 import java.util.List;
 
 @Endpoint
@@ -34,17 +32,16 @@ public class OrderController {
         this.clientService = clientService;
     }
 
+    //get all client order
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getPortfolios(){
+    public ResponseEntity<List<Order>> getAllOrders(){
         return new ResponseEntity<>(orderService.getAllOrders(),HttpStatus.OK);
     }
 
     @GetMapping("/all/{clientid}")
     public ResponseEntity<List<Order>> getOrders(@PathVariable("clientid") Long clientid) throws ClientException {
-
         Client client = clientService.getClientById(clientid);
-        List<Order> clientOrders = orderService.getAllOrders(client);
-
+        List<Order> clientOrders = orderService.getAllClientOrders(client);
         return  new ResponseEntity<>(clientOrders, HttpStatus.OK);
     }
 
@@ -55,25 +52,16 @@ public class OrderController {
         return  new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-
-
-    @PostMapping("/ordersubmission")
+    @PostMapping("/ordersubmission") //new order
     public ResponseEntity<Order> addOrder(@RequestBody Order order) throws OrderException {
         order = orderService.createOrder(order);
         return  new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-/*    @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        portfolio.setClient(client);
-
-        portfolio =  portfolioService.addPortfolio(portfolio);
-
-        return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
-    }*/
+    @DeleteMapping("/delete/{OrderId}")
+    public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws IllegalStateException {
+        orderService.getAllOrders();
+    }
 
 
 

@@ -56,8 +56,8 @@ public class Order {
         return product;
     }
 
-    public String getClient() {
-        return "CLient Nunana";
+    public Client getClient() {
+        return client;
     }
 
     public void setProduct(String product) {
@@ -110,5 +110,20 @@ public class Order {
 
     public void setCreated(LocalDate created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", product='" + product + '\'' +
+                ", side='" + side + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", validStatus=" + validStatus +
+                ", portfolioid=" + portfolioid +
+                ", created=" + created +
+                ", client=" + client +
+                '}';
     }
 }

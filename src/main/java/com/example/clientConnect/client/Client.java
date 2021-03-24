@@ -47,7 +47,7 @@ public class Client {
     @OneToMany(mappedBy="client",cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    public Client() {
+    public Client(String nunana, String s, String what_is_app, double v, LocalDate of) {
     }
 
     public Client( String name, String email, String password, Integer balance) {
@@ -56,6 +56,7 @@ public class Client {
         this.password = password;
         this.balance = balance;
     }
+
 
     public Client(String email, String password) {
         this.email = email;
@@ -101,6 +102,14 @@ public class Client {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public List<Portfolio> getPortfolios() {
+        return portfolios;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 
     public LocalDate getCreated_at() {

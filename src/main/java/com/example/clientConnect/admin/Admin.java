@@ -14,15 +14,14 @@ import java.time.LocalDate;
 @Transactional
 public class Admin {
     @Id
-    @SequenceGenerator(
+/*    @SequenceGenerator(
             name="admin_sequence", sequenceName = "admin_sequence",
             allocationSize = 1
-    )
+    )*/
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "admin_sequence"
+            strategy = GenerationType.SEQUENCE
+            //generator = "admin_sequence"
     )
-
 
     @Column(nullable = false,updatable = false)
     private Long id;

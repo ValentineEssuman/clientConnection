@@ -62,12 +62,12 @@ public class ClientService {
     }
 
     //deleting a client
-    public void deleteClient(Client client) {
-        boolean exists = clientRepository.existsById(client.getId());
+    public void deleteClient(Long clientid) {
+        boolean exists = clientRepository.existsById(clientid);
         if (!exists) {
-            throw new IllegalStateException("Student with id: " + client.getId() + " does not exist.");
+            throw new IllegalStateException("Student with id: " + clientid + " does not exist.");
         }
-        clientRepository.deleteById(client.getId());
+        clientRepository.deleteById(clientid);
     }
 
     @Transactional

@@ -1,22 +1,15 @@
 package com.example.clientConnect.client;
 
 
-import com.example.clientConnect.order.Order;
 import com.example.clientConnect.order.OrderService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.tomcat.util.json.JSONParser;
+import com.example.clientConnect.portfolio.Portfolio;
+import com.example.clientConnect.portfolio.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import trade_engine.order_validation_service.GetOrderRequest;
 
 
-import java.io.DataInput;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -27,11 +20,13 @@ public class ClientController {
 
     private  final ClientService clientService;
     private final OrderService orderService;
+    private final PortfolioService portfolioService;
 
     @Autowired
-    public ClientController(ClientService clientService, OrderService orderService) {
+    public ClientController(ClientService clientService, OrderService orderService, PortfolioService portfolioService) {
         this.clientService = clientService;
         this.orderService = orderService;
+        this.portfolioService = portfolioService;
     }
 
     //getting all clients
@@ -39,6 +34,13 @@ public class ClientController {
     public ResponseEntity<List<Client>> getClients(){
         List<Client> clients = clientService.getClients();
         return new ResponseEntity<>(clients, HttpStatus.OK);
+    }
+
+    // login a client
+    @PostMapping("/login")
+    public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException {
+        client = clientService.loginClient(client);
+        return  new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     //creating a new client
@@ -50,13 +52,9 @@ public class ClientController {
         return  new ResponseEntity<>(client, HttpStatus.OK);
     }
 
-  // login a client
-    @PostMapping("/login")
-    public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException {
-
-        client = clientService.loginClient(client);
-
-        return  new ResponseEntity<>(client, HttpStatus.OK);
+    @DeleteMapping("/unregister/{clientId}")
+    public void deleteClient(@PathVariable("clientId") Long clientId) throws ClientException {
+        clientService.deleteClient(clientId);
     }
 
     //getting client by ID
@@ -66,22 +64,27 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
+    @PostMapping("/add/{client_id}")
+    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id, @RequestBody Portfolio portfolio) throws ClientException {
 
+        Client client = clientService.getClientById(client_id);
 
+        //portfolio.setClient(client);
 
+        portfolio =  portfolioService.addPortfolio(portfolio);
 
+        return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    @PutMapping("/update/{clientId}")
+    public void updateClient(
+            @PathVariable("clientId") Long clientId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) Double balance
+    ) throws ClientException {
+        clientService.updateClient(clientId, name, password, balance);
+    }
 
 
 

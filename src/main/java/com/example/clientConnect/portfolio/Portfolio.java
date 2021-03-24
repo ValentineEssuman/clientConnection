@@ -76,4 +76,14 @@ public class Portfolio {
         return created_at;
     }
 
+    @Override
+    public String toString() {
+        return "Portfolio{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", client=" + client +
+                ", products=" + products +
+                ", created_at=" + created_at +
+                '}';
+    }
 }
