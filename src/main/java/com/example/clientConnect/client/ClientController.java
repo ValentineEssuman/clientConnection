@@ -115,18 +115,18 @@ public class ClientController {
         System.out.println(answer);
     }
 
-/*    //submitting order via rest
-    @PostMapping("/submit-order")
-    public ResponseEntity<Object> submitOrder(@RequestBody JSONParser orderData) throws IOException {
-        final String validationService_url = "http://trade-engine/order-validation-service";
-        ObjectMapper mapper = new ObjectMapper();
-        //Reader readData = new StringReader(orderData);
-        //Order clientOrder = mapper.readValue(readData, Order.class);
-        RestTemplate restTemplate = new RestTemplate();
-        Order clientOrder = mapper.readValue((DataInput) orderData, Order.class);
-        Object messObject = restTemplate.postForObject(validationService_url, clientOrder, Object.class);
-        System.out.println(messObject);
-        return new ResponseEntity<Object>(messObject, HttpStatus.MULTI_STATUS.OK);
+
+/*    @GetMapping("/trades/open")
+    public ResponseEntity<String> getOpenTrades(){
+        String openTrades = adminService.getOpenTrades();
+        return new ResponseEntity<String>(openTrades, HttpStatus.OK);
+    }
+
+    //checking filled/pending client trades
+    @GetMapping("/trades/pending")
+    public ResponseEntity<String> getPendingTrades(){
+        String pendingTrades = adminService.getPendingTrades();
+        return new ResponseEntity<String>(pendingTrades, HttpStatus.OK);
     }*/
 
 
