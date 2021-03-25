@@ -36,14 +36,10 @@ public class PortfolioController {
         return portfolioService.getPortfolioById(client_id);
     }
 
-
-
-
+    // deleting client porfolio based on cliend id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePortfolio(@PathVariable("id") Long id){
-
         portfolioService.deletePortfolio(id);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

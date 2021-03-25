@@ -30,7 +30,6 @@ public class ProductController {
     }
 
 
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws ProductException {
 

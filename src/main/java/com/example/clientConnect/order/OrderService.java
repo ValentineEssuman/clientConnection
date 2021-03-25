@@ -39,14 +39,6 @@ public class OrderService {
         return new ResponseEntity<Order>(gottenOrder.getBody() , HttpStatus.ACCEPTED);
     }
 
-    //client create order is an apikey
-    public Order createOrder(Order order){
-        order = orderRepository.save(order);
-
-        // Alert: Report new Order to Reporting Section
-        return order;
-
-    }
 
     public void deleteOrder(long id) {
         boolean exists = orderRepository.existsById(id);

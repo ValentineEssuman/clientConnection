@@ -3,10 +3,15 @@ package com.example.clientConnect.portfolio;
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.product.Product;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,15 +19,33 @@ import java.util.List;
 //@Transactional
 public class Portfolio {
 
-    @Id
-/*    @SequenceGenerator(
-            name="portfolio_sequence", sequenceName = "portfolio_sequence",
-            allocationSize = 1
-    )*/
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
-    private Long id;
+
+    @Column(name = "portfolio_Id")
+    private long portfolioId;
+    private String name;
+
+    @Transient
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private long clientId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    @JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
+    @JsonIdentityReference(alwaysAsId = true)
+    private Client client;
+
+    // client can place orders to make portforlio
+    @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Product> products = new ArrayList<>();
+
+    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Order> clientOrders = new ArrayList<>();
+
+    //private LocalDateTime createdAt = LocalDateTime.now();
+
+/*    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -35,9 +58,72 @@ public class Portfolio {
     @OneToMany(mappedBy="portfolio",cascade = CascadeType.ALL)
     private List<Product> products;
 
-    private LocalDate created_at = LocalDate.now();
+    private LocalDate created_at = LocalDate.now();*/
 
-    public Portfolio(String name,
+    public Portfolio() {
+    }
+
+    public Portfolio(String name) {
+        this.name = name;
+    }
+
+    public Portfolio(String name, long clientId) {
+        this.name = name;
+        this.clientId = clientId;
+    }
+
+    public long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(long clientId) {
+        this.clientId = clientId;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Product product) {
+        products.add(product);
+    }
+
+    public List<Order> getOrders() {
+        return clientOrders;
+    }
+
+    public void setOrders(Order clientOrder) {
+        clientOrders.add(clientOrder);
+    }
+
+
+
+
+/*    public Portfolio(String name,
                      Client client) {
         this.name = name;
         this.client = client;
@@ -50,9 +136,9 @@ public class Portfolio {
 
     public Portfolio() {
 
-    }
+    }*/
 
-    public Long getId() {
+/*    public Long getId() {
         return id;
     }
 
@@ -74,9 +160,21 @@ public class Portfolio {
 
     public LocalDate getCreated_at() {
         return created_at;
-    }
+    }*/
 
     @Override
+    public String toString() {
+        return "Portfolio{" +
+                "portfolioId=" + portfolioId +
+                ", name='" + name + '\'' +
+                ", clientId=" + clientId +
+                ", client=" + client +
+                ", products=" + products +
+                ", clientOrders=" + clientOrders +
+                '}';
+    }
+
+/*  @Override
     public String toString() {
         return "Portfolio{" +
                 "id=" + id +
@@ -85,5 +183,5 @@ public class Portfolio {
                 ", products=" + products +
                 ", created_at=" + created_at +
                 '}';
-    }
+    }*/
 }

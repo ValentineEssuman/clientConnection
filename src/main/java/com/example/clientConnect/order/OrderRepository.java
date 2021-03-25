@@ -1,3 +1,4 @@
+/*
 package com.example.clientConnect.order;
 import com.example.clientConnect.client.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,3 +19,4 @@ public interface OrderRepository extends  JpaRepository<Order, Long>{
         Optional<List<Order>> findByPortfolio_PortfolioId(long portfolioId);
 
 }
+*/

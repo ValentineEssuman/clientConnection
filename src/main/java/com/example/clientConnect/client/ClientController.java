@@ -55,6 +55,7 @@ public class ClientController {
         //Redis log creating of new clients
     }
 
+    //deleting client based on id
     @DeleteMapping("/unregister/{clientId}")
     public void deleteClient(@PathVariable("clientId") Long clientId) throws ClientException {
         clientService.deleteClient(clientId);
@@ -66,6 +67,7 @@ public class ClientController {
         return clientService.getClientById(clientId);
     }
 
+    //adding portfolio based on clientid
     @PostMapping("/add/{client_id}")
     public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id, @RequestBody Portfolio portfolio) throws ClientException {
 

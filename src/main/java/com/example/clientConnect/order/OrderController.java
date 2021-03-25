@@ -42,9 +42,10 @@ public class OrderController {
 
     //getting Orders by ID
     @GetMapping("/{id}")
-    public Order getOrder(@RequestParam Long id) throws OrderException {
+    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
         return orderService.getOrder(id);
     }
+
     //add Order based
     @PostMapping("/ordersubmission") //new order
     public ResponseEntity<Order> addOrder(@RequestBody Order order) throws OrderException {
@@ -52,35 +53,11 @@ public class OrderController {
         return  new ResponseEntity<>(order, HttpStatus.OK);
     }
 
+    //Delete order by Order Id
     @DeleteMapping("/delete/{OrderId}")
     public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws IllegalStateException {
         orderService.getAllOrders();
     }
-
-
-
-    //Submitting Order Rest Endpoints
-/*    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getOrderRequest")
-    public ResponseEntity<Object> submitOrderSoap(@RequestPayload Order orderjson) throws JsonProcessingException {
-        String url = "https://order-validation-service.herokuapp.com/ws";
-        GetOrderRequest orderRequest = new GetOrderRequest();
-        orderRequest.setOrder(orderjson);
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        String clientOrderstr = mapper.writeValueAsString(orderjson);
-        try {
-            Order clientOrder = mapper.readValue((DataInput) orderjson, Order.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("mapper error in reading value");
-        }
-        //Report System : Redis message to Reporting topic to notify client order made
-        System.out.println(clientOrderstr);
-        Object orderMessage = restTemplate.postForObject(url, orderRequest, Object.class);
-        return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
-    }*/
-
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
     public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {
