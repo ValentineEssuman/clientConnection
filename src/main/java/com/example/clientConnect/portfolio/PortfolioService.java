@@ -21,9 +21,9 @@ public class PortfolioService {
     }
 
     // adding a portfolio
-    public ResponseEntity<Portfolio> addPortfolio(Portfolio portfolioname){
+    public ResponseEntity<Portfolio> addPortfolioByClientId(Long clientId,Portfolio portfolioname){
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Portfolio>  sentPortfolio = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", portfolioname, Portfolio.class);
+        ResponseEntity<Portfolio>  sentPortfolio = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id"+clientId, portfolioname, Portfolio.class);
         return new ResponseEntity<Portfolio>(sentPortfolio.getBody(), HttpStatus.ACCEPTED);
 
     }

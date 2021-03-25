@@ -26,7 +26,7 @@ public class PortfolioController {
     //add portfolio based on client id
     @PostMapping("/add/{client_id}")
     public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws PortfolioException {
-        portfolioService.addPortfolio(portfolio);
+        portfolioService.addPortfolioByClientId(client_id, portfolio);
         return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 

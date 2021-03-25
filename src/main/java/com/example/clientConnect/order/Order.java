@@ -8,13 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-
-//@Transactional
 public class Order {
 
 /*   private Long id;

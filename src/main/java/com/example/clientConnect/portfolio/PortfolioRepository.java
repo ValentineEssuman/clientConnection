@@ -1,3 +1,4 @@
+/*
 package com.example.clientConnect.portfolio;
 
 import com.example.clientConnect.client.Client;
@@ -13,3 +14,4 @@ public interface PortfolioRepository extends JpaRepository<Portfolio,Long> {
 
     List<Portfolio> findAllByClient(Client client);
 }
+*/

@@ -68,6 +68,7 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }*/
 
+    // order request submisssion
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
     public void sendOrder(@RequestPayload Order odr) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();

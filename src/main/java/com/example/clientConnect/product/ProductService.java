@@ -1,88 +1,49 @@
 package com.example.clientConnect.product;
 
-import com.example.clientConnect.portfolio.Portfolio;
-import com.example.clientConnect.portfolio.PortfolioException;
+import com.example.clientConnect.client.Client;
 import com.example.clientConnect.portfolio.PortfolioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
-
-    public ProductService(ProductRepository productRepository, PortfolioService portfolioService) {
-        this.productRepository = productRepository;
-    }
 
     //Getting all products
-    public List<Product> getAllProducts(){
-        List<Product> products = productRepository.findAll();
+    public Product[] getAllProducts(){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Product[]> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/product/all", Product[].class);
+        return responseEntity.getBody();
+    }
 
-        return products;
+    //add products for client with id
+    public ResponseEntity<Product> getProductByClient(Long clientId) throws ProductException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Product>  gottenProducts =  restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/product/id", clientId, Product.class);
+        return new ResponseEntity<Product>(gottenProducts.getBody() , HttpStatus.ACCEPTED);
+    }
+
+    //add product to portfolio by portfolioId
+    public ResponseEntity<Product> addProductByProductId(Long portfolioId, Product product ){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Product>  sentPortfolio = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/product/proftfolioId" +portfolioId, product, Product.class);
+        return new ResponseEntity<Product>(sentPortfolio.getBody(), HttpStatus.ACCEPTED);
 
     }
 
-    //Getting all products with portfolio
-    public List<Product> getAllProductsForPortfolio(Portfolio portfolio)  {
-
-        List<Product> products = productRepository.findProductsByPortfolio(portfolio);
-
-        return products;
-
+    public ResponseEntity<String> deleteProduct(Long productId) throws ProductException {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/product/delete/"+ productId);
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
-    //Getting just the Product
-    public Product getProduct(Long id) throws ProductException {
-
-        Product product = productRepository.findById(id).orElseThrow(
-                ()-> new ProductException("Product with id "+id+" not found")
-        );
-
-        return product;
+    public ResponseEntity<String> updateProduct(Product updatedproduct) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put("https://tradeenginetestdb.herokuapp.com/api/v1/product/update", updatedproduct, Product.class);
+        return new ResponseEntity<String>("Updated", HttpStatus.ACCEPTED);
     }
 
 
-    public Product addProduct(Product product){
-
-        product = productRepository.save(product);
-
-        return product;
-    }
-
-
-    public String deleteProduct(Long id) throws ProductException {
-
-        Product product = productRepository.findById(id).orElseThrow(
-                ()-> new ProductException("Product with id "+id+" not found")
-        );
-
-        productRepository.delete(product);
-
-        return "Product successfully deleted";
-    }
-
-
-    @Transactional
-    public void updateProduct(Long productId, Integer quantity, Double lastTradedPrice, String lastTradedSide) {
-        Product product = productRepository.findProductById(productId).orElseThrow(() -> new IllegalStateException("Product with id " + productId + " does not exist."));
-
-        if(quantity != null && !Objects.equals(product.getQuantity(),quantity)){
-            product.setQuantity(quantity);
-        }
-
-        if(lastTradedPrice != null && !Objects.equals(product.getLastTradedPrice(),lastTradedPrice)){
-            product.setLastTradedPrice(lastTradedPrice);
-        }
-
-        if(lastTradedSide != null && lastTradedSide.length() > 0 && !Objects.equals(product.getLastTradedSide(),lastTradedSide)){
-            product.setLastTradedSide(lastTradedSide);
-        }
-    }
 }

@@ -9,16 +9,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table
-//@Transactional
 public class Portfolio {
-
 
     @Column(name = "portfolio_Id")
     private long portfolioId;

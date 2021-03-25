@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Product {
 
@@ -48,7 +46,7 @@ public class Product {
     @JoinColumn(name = "portfolioID")
     private Portfolio portfolio;*/
 
-    public Product() {
+    public Product(Long productId, Integer quantity, Double lastTradedPrice, String lastTradedSide) {
     }
 
     public Product(long productId) {

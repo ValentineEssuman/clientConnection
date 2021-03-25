@@ -1,5 +1,7 @@
 package com.example.clientConnect.product;
 
+import com.example.clientConnect.client.Client;
+import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.portfolio.Portfolio;
 import com.example.clientConnect.portfolio.PortfolioException;
 import com.example.clientConnect.portfolio.PortfolioService;
@@ -21,30 +23,42 @@ public class ProductController {
         this.portfolioService = portfolioService;
     }
 
+
+    //get all products
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> products = productService.getAllProducts();
+    public Product[] getAllProducts(){
+        return productService.getAllProducts();
 
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
+    // get porfolio based on client id
+    @GetMapping("/{client_id}")
+    public ResponseEntity<Product> getClientProducts(@PathVariable("client_id") Long client_id) throws ProductException {
+        return productService.getProductByClient(client_id);
+    }
+
+    @PostMapping("/add/{portfolio_Id}")
+    public ResponseEntity<Product> addProduct(@PathVariable("portfolio_Id") Long portfolio_Id,@RequestBody Product product) throws ProductException {
+        productService.addProductByProductId(portfolio_Id, product);
+        return new ResponseEntity<>(product,HttpStatus.ACCEPTED);
     }
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws ProductException {
-
-       productService.deleteProduct(id);
-
+        productService.deleteProduct(id);
         return new ResponseEntity<>("Product successfully deleted",HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/update/{productId}")
-    public void updateProduct(
+    public ResponseEntity<Product> updateClient(
             @PathVariable("productId") Long productId,
             @RequestParam(required = false) Integer quantity,
             @RequestParam(required = false) Double lastTradedPrice,
             @RequestParam(required = false) String lastTradedSide
-    ) throws IllegalStateException {
-        productService.updateProduct(productId,quantity,lastTradedPrice,lastTradedSide);
+    ) throws ClientException {
+        Product updatedProduct = new Product(productId, quantity, lastTradedPrice, lastTradedSide);
+        productService.updateProduct(updatedProduct);
+        return new ResponseEntity<> (updatedProduct, HttpStatus.ACCEPTED);
     }
 }
