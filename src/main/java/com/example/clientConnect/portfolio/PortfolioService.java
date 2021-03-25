@@ -36,16 +36,8 @@ public class PortfolioService {
         return new ResponseEntity<Portfolio>(gottenPortfolio.getBody() , HttpStatus.ACCEPTED);
     }
 
-    //deleting a client
-    public ResponseEntity<String> deleteClient(Long clientid) {
-        //boolean exists = clientRepository.existsById(clientid);
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/portfolio/uregister/"+ clientid);
-        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
-    }
 
-
-    public ResponseEntity<String> deletePortfolio(Long portfolioId){
+    public ResponseEntity<String> deletePortfolio(long portfolioId){
         //boolean exists = clientRepository.existsById(portfolioId);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/portfolio/delete/"+ portfolioId);

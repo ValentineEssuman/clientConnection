@@ -46,18 +46,25 @@ public class OrderController {
         return orderService.getOrder(id);
     }
 
-    //add Order based
-    @PostMapping("/ordersubmission") //new order
-    public ResponseEntity<Order> addOrder(@RequestBody Order order) throws OrderException {
-        order = orderService.createOrder(order);
-        return  new ResponseEntity<>(order, HttpStatus.OK);
+    //Delete order by Order Id
+    @DeleteMapping("/delete/order/{OrderId}")
+    public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws OrderException  {
+        //orderService.ge;
     }
 
-    //Delete order by Order Id
-    @DeleteMapping("/delete/{OrderId}")
-    public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws IllegalStateException {
-        orderService.getAllOrders();
+    // deleting client porfolio based on cliend id
+    @DeleteMapping("/delete/client/{clientid}")
+    public ResponseEntity<String> deleteOrderByClient(@PathVariable("clientid") Long clientid) throws OrderException {
+        orderService.deleteByClientId(clientid);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+/*    // deleting client porfolio based on cliend id
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deletePortfolio(@PathVariable("id") Long id){
+        portfolioService.deletePortfolio(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }*/
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
     public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {

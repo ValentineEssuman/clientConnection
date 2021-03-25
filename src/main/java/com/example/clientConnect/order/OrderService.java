@@ -39,13 +39,34 @@ public class OrderService {
         return new ResponseEntity<Order>(gottenOrder.getBody() , HttpStatus.ACCEPTED);
     }
 
+    // adding a portfolio
+    public ResponseEntity<Portfolio> addPortfolio(Portfolio portfolioname){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Portfolio>  sentPortfolio = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", portfolioname, Portfolio.class);
+        return new ResponseEntity<Portfolio>(sentPortfolio.getBody(), HttpStatus.ACCEPTED);
 
-    public void deleteOrder(long id) {
-        boolean exists = orderRepository.existsById(id);
-        if (!exists) {
-            throw new IllegalStateException("Order with id: " + id + " does not exist.");
-        }
-        orderRepository.deleteById(id);
+    }
+/*    //client create order is an apikey
+    public Order createOrder(Order order){
+        order = orderRepository.save(order);
+
+        // Alert: Report new Order to Reporting Section
+        return order;
+
+    }*/
+
+/*    public ResponseEntity<String> deleteByOrderId(Long orderId){
+        //boolean exists = clientRepository.existsById(portfolioId);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/portfolio/delete/"+ orderId);
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
+
+    }*/
+
+    public ResponseEntity<String> deleteByClientId(long clientId) throws OrderException{
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/portfolio/delete/"+ clientId); // change
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
 /*    //find filled/successful orders
