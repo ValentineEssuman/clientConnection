@@ -1,6 +1,8 @@
 package com.example.clientConnect.order;
 
+import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.client.ClientService;
+import com.example.clientConnect.portfolio.Portfolio;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.http.*;
@@ -46,11 +48,11 @@ public class OrderController {
         return orderService.getOrder(id);
     }
 
-    //Delete order by Order Id
+/*    //Delete order by Order Id
     @DeleteMapping("/delete/order/{OrderId}")
     public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws OrderException  {
         //orderService.ge;
-    }
+    }*/
 
     // deleting client porfolio based on cliend id
     @DeleteMapping("/delete/client/{clientid}")
@@ -67,7 +69,7 @@ public class OrderController {
     }*/
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
-    public void sendOrder(@RequestPayload GetOrderRequest odr) throws JsonProcessingException {
+    public void sendOrder(@RequestPayload Order odr) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         XmlMapper xmlMapper = new XmlMapper();
         String xml = xmlMapper.writeValueAsString(odr);
@@ -78,6 +80,19 @@ public class OrderController {
         HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
         ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
         System.out.println(answer);
+    }
+
+    //find filled/successful orders
+    @GetMapping("/all/{status}")
+    public ResponseEntity<Order> getSuccessOrders(@PathVariable("status") String  status) {
+        return orderService.getAllOrdersByStatus(status);
+    }
+
+    //cancel trade
+    @PostMapping("/cancel/{client_id}") // action: Cancel, order, open
+    public ResponseEntity<Order> cancelTrade(@PathVariable("client_id") Long client_id) throws OrderException {
+        return orderService.cancelTradeByClientId(client_id);
+        // return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 
 

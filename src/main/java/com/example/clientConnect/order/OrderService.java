@@ -1,8 +1,6 @@
 package com.example.clientConnect.order;
 
 
-import com.example.clientConnect.client.ClientService;
-import com.example.clientConnect.portfolio.Portfolio;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,13 +9,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ClientService clientService;
-
-    public OrderService(OrderRepository orderRepository, ClientService clientService) {
-        this.orderRepository = orderRepository;
-        this.clientService = clientService;
-    }
     //get all portfolios
     public Order[] getAllOrders(){
         RestTemplate restTemplate = new RestTemplate();
@@ -39,22 +30,6 @@ public class OrderService {
         return new ResponseEntity<Order>(gottenOrder.getBody() , HttpStatus.ACCEPTED);
     }
 
-    // adding a portfolio
-    public ResponseEntity<Portfolio> addPortfolio(Portfolio portfolioname){
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Portfolio>  sentPortfolio = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", portfolioname, Portfolio.class);
-        return new ResponseEntity<Portfolio>(sentPortfolio.getBody(), HttpStatus.ACCEPTED);
-
-    }
-/*    //client create order is an apikey
-    public Order createOrder(Order order){
-        order = orderRepository.save(order);
-
-        // Alert: Report new Order to Reporting Section
-        return order;
-
-    }*/
-
 /*    public ResponseEntity<String> deleteByOrderId(Long orderId){
         //boolean exists = clientRepository.existsById(portfolioId);
         RestTemplate restTemplate = new RestTemplate();
@@ -69,12 +44,19 @@ public class OrderService {
         return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
-/*    //find filled/successful orders
-    @GetMapping("/all/{status}")
-    public List<Order> getSuccessOrder(@PathVariable("status") Order order) {
-        List<Order> statusOrders = orderRepository.findOrdersById(order.getValidStatus() == );
-        return statusOrders;
-    }*/
+    //get all Orders for by status /
+    public ResponseEntity<Order> getAllOrdersByStatus(String status) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order>  statusOrders = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/clientorders/clientId/all" + status, Order.class);
+        return new ResponseEntity<Order>(statusOrders.getBody() , HttpStatus.ACCEPTED);
+    }
+
+
+    public ResponseEntity<Order> cancelTradeByClientId(Long client_id) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order>  cancaledOrder = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", client_id, Order.class);
+        return new ResponseEntity<Order>(cancaledOrder.getBody(), HttpStatus.ACCEPTED);
+    }
 
 
 /*    //findList of orders by clients
