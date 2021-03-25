@@ -1,3 +1,4 @@
+/*
 package com.example.clientConnect.product;
 
 import com.example.clientConnect.portfolio.Portfolio;
@@ -14,3 +15,4 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     List<Product> findProductsByPortfolio(Portfolio portfolio);
 }
+*/

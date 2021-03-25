@@ -51,6 +51,13 @@ public class OrderService {
         return new ResponseEntity<Order>(statusOrders.getBody() , HttpStatus.ACCEPTED);
     }
 
+    //get all Orders for by status /
+    public ResponseEntity<Order> getAllStatusOrderByClient(Long client_id,String status) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order>  statusOrders = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/clientorders/clientId/" + client_id + status, Order.class);
+        return new ResponseEntity<Order>(statusOrders.getBody() , HttpStatus.ACCEPTED);
+    }
+
 
     public ResponseEntity<Order> cancelTradeByClientId(Long client_id) {
         RestTemplate restTemplate = new RestTemplate();

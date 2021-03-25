@@ -22,18 +22,16 @@ public class ClientService {
 
     //get all clients
     public Client[] getClients() {
-
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Client[]> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/all", Client[].class);
-
         return responseEntity.getBody();
     }
 
     //Register new client
-    public void addNewClient(Client client) {
+    public ResponseEntity<Client>addNewClient(Client client) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/register", client, Client.class);
-
+        return new ResponseEntity<Client>(client, HttpStatus.ACCEPTED);
     }
 
     //Login Client
@@ -67,15 +65,4 @@ public class ClientService {
 
 }
 
-/*    @GetMapping("/{id}")
-    public Client getClient(Client client) throws ClientException {
-
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
-
-        Order orders = orderService.getOrder(id);
-        return  new ResponseEntity<>(orders, HttpStatus.OK);
-    }*/
 
