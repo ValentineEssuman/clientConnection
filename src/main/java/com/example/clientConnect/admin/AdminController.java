@@ -1,7 +1,6 @@
 package com.example.clientConnect.admin;
 
 import com.example.clientConnect.client.AdminException;
-import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.order.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +26,9 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Admin> loginAdmin (@RequestBody Admin admin) throws AdminException {
+    public ResponseEntity<Admin> loginAdmin(@RequestBody Admin admin) throws AdminException {
         return adminService.loginAdmin(admin);
+        //return new ResponseEntity<Admin> (oldAdmin, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/clientOrder")
@@ -37,19 +37,28 @@ public class AdminController {
         return new ResponseEntity<String>(orders, HttpStatus.OK);
     }
 
+    //Which trades are open/cancelled/failed/ successful and filled?
+
+
     //find filled/success or failed orders
     @GetMapping("/clientOrder/{client_id}/{status}")
-    public ResponseEntity<Order> getStatusOrders(@PathVariable("client_id") Long  clientId, @PathVariable("status") String  status )
-            throws AdminException {
+    public ResponseEntity<Order> getStatusOrders(@PathVariable("client_id") Long  clientId, @PathVariable("status") String  status ) {
         return adminService.getStatusOrdersByClient(clientId, status);
     }
 
 
-    @GetMapping("/trades/open/{exchange_Id}")
-    public ResponseEntity<String> getOpenTrades(@PathVariable("exchange_Id") Long  exchange_Id) throws AdminException {
-        return adminService.getOpenTradesId(exchange_Id);
+    @GetMapping("/trades/open")
+    public ResponseEntity<String> getOpenTrades(){
+        String openTrades = adminService.getOpenTrades();
+        return new ResponseEntity<String>(openTrades, HttpStatus.OK);
     }
 
+    //checking filled/pending client trades
+    @GetMapping("/trades/pending")
+    public ResponseEntity<String> getPendingTrades(){
+        String pendingTrades = adminService.getPendingTrades();
+        return new ResponseEntity<String>(pendingTrades, HttpStatus.OK);
+    }
 
 
 }

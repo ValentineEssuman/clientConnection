@@ -1,19 +1,18 @@
 package com.example.clientConnect.order;
 
-import com.example.clientConnect.client.ClientException;
 import com.example.clientConnect.client.ClientService;
-import com.example.clientConnect.portfolio.Portfolio;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.ws.server.endpoint.annotation.Endpoint;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import trade_engine.order_validation_service.GetOrderRequest;
+import trade_engine.order_validation_service.GetOrderResponse;
 
-@Endpoint
+import javax.xml.soap.MessageFactory;
+
 //Uncommment if you want to work with the rest
 @RestController
 @RequestMapping(path="api/order")
@@ -37,22 +36,18 @@ public class OrderController {
     // login a client
 
     //getting Orders by clientID
-    @GetMapping("/all/{clientid}")
-    public ResponseEntity<Order> getAllClientOrders(@PathVariable("clientid") Long clientid) throws OrderException{
+    @GetMapping("/client/{clientid}")
+    public Order[] getAllClientOrders(@PathVariable("clientid") Long clientid) throws OrderException{
         return orderService.getAllClientOrders(clientid);
     }
 
     //getting Orders by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable("id") Long id) throws OrderException, JsonProcessingException {
         return orderService.getOrder(id);
     }
 
-/*    //Delete order by Order Id
-    @DeleteMapping("/delete/order/{OrderId}")
-    public void deleteClientOrder(@PathVariable("clientOrderId") Long OrderId) throws OrderException  {
-        //orderService.ge;
-    }*/
 
     // deleting client porfolio based on cliend id
     @DeleteMapping("/delete/client/{clientid}")
@@ -61,42 +56,46 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-/*    // deleting client porfolio based on cliend id
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePortfolio(@PathVariable("id") Long id){
-        portfolioService.deletePortfolio(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }*/
 
     // order request submisssion
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
-    public void sendOrder(@RequestPayload Order odr) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        XmlMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(odr);
-        System.out.println(xml);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_XML);
-        xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://trade-engine/order-validation-service\"><soapenv:Header/><soapenv:Body>"+xml+"</soapenv:Body></soapenv:Envelope>";
-        HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
-        ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
-        System.out.println(answer);
+    @PostMapping("/sendOrder")
+    public void sendOrder(@RequestBody Order odr) throws Exception {
+        System.out.println(odr);
+        trade_engine.order_validation_service.Order order = new trade_engine.order_validation_service.Order();
+        order.setPortfolioId(odr.getPortfolioId());
+        order.setClientId(odr.getClientId());
+        order.setSide(odr.getSide());
+        order.setQuantity(odr.getQuantity());
+        order.setProduct(odr.getProduct());
+        order.setPrice(odr.getPrice());
+        GetOrderRequest getOrderRequest = new GetOrderRequest();
+        getOrderRequest.setOrder(order);
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.afterPropertiesSet();
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("trade_engine.order_validation_service");
+        marshaller.afterPropertiesSet();
+
+        webServiceTemplate.setMarshaller(marshaller);
+        webServiceTemplate.setUnmarshaller(marshaller);
+        webServiceTemplate.afterPropertiesSet();
+        System.out.println(odr);
+        GetOrderResponse response =(GetOrderResponse) webServiceTemplate.marshalSendAndReceive("https://order-validation-service.herokuapp.com/ws", getOrderRequest);
+        System.out.println(response.getValidationStatus());
     }
 
     //find filled/successful orders
     @GetMapping("/all/{status}")
-    public ResponseEntity<Order> getSuccessOrders(@PathVariable("status") String  status) {
+    public ResponseEntity<Order[]> getSuccessOrders(@PathVariable("status") String  status) {
         return orderService.getAllOrdersByStatus(status);
     }
 
     //cancel trade
-    @PostMapping("/cancel/{client_id}") // action: Cancel, order, open
-    public ResponseEntity<Order> cancelTrade(@PathVariable("client_id") Long client_id) throws OrderException {
-        return orderService.cancelTradeByClientId(client_id);
-        // return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
+    @GetMapping("/cancel/{clientorder_id}") // action: Cancel, order, open
+    public ResponseEntity<String> cancelTrade(@PathVariable("clientorder_id") Long clientOrder_id) throws OrderException {
+        return orderService.cancelTradeByClientOrderId(clientOrder_id);
     }
-
-
-
 }
 

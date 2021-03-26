@@ -1,11 +1,14 @@
 package com.example.clientConnect.portfolio;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientException;
+
 import com.example.clientConnect.client.ClientService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/portfolio")
@@ -24,15 +27,14 @@ public class PortfolioController {
     }
 
     //add portfolio based on client id
-    @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws PortfolioException {
+    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws PortfolioException, JsonProcessingException {
         portfolioService.addPortfolioByClientId(client_id, portfolio);
         return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 
     // get porfolio based on client id
     @GetMapping("/{client_id}")
-    public ResponseEntity<Portfolio> getPortfolios(@PathVariable("client_id") Long client_id) throws PortfolioException {
+    public ResponseEntity<List<Portfolio>> getPortfolios(@PathVariable("client_id") Long client_id) throws PortfolioException, JsonProcessingException {
         return portfolioService.getPortfolioById(client_id);
     }
 

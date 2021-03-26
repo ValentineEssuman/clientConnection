@@ -1,4 +1,4 @@
-package com.example.clientConnect.client;
+package com.example.clientConnect.admin;
 
 public class AdminException extends Exception {
 
