@@ -43,14 +43,17 @@ public class ClientController {
 
     // login a client
     @PostMapping("/login")
-    public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException {
+
+    public ResponseEntity<Client> loginClient(@RequestBody Client client) throws ClientException, JsonProcessingException {
         ResponseEntity<Client> oldclient  = clientService.loginClient(client);
         return new ResponseEntity<> (oldclient.getBody(), HttpStatus.ACCEPTED);
     }
 
     //creating a new client
     @PostMapping("/register")
-    public void registerClient(@RequestBody Client client) throws  JsonProcessingException{
+
+    public void registerClient(@RequestBody Client client) throws JsonProcessingException {
+
         clientService.addNewClient(client);
         //Redis log creating of new clients
     }
@@ -63,17 +66,20 @@ public class ClientController {
 
     //getting client by ID
     @GetMapping("/{clientId}")
-    public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId, @RequestBody Client client) throws ClientException{
+
+    public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId) throws ClientException, JsonProcessingException {
         return clientService.getClientById(clientId);
     }
 
     //adding portfolio based on clientid
     @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id, @RequestBody Portfolio portfolio) throws ClientException {
 
-      return portfolioService.addPortfolioByClientId(client_id, portfolio);
+    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id, @RequestBody Portfolio portfolio) throws ClientException, JsonProcessingException {
 
-       // return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
+
+        return portfolioService.addPortfolioByClientId(client_id, portfolio);
+
+        // return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/update/{clientId}")
@@ -83,7 +89,7 @@ public class ClientController {
             @RequestParam(required = false) String password,
             @RequestParam(required = false) Double balance
     ) throws ClientException {
-       Client updatedClient = new Client(name, password, balance);
+        Client updatedClient = new Client(name, password, balance);
         clientService.updateClient(updatedClient);
         return new ResponseEntity<> (updatedClient, HttpStatus.ACCEPTED);
     }
@@ -106,30 +112,10 @@ public class ClientController {
         RestTemplate restTemplate = new RestTemplate();
         XmlMapper xmlMapper = new XmlMapper();
         String xml = xmlMapper.writeValueAsString(orderRequest);
-        System.out.println(xml);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_XML);
         xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://trade-engine/order-validation-service\"><soapenv:Header/><soapenv:Body>"+xml+"</soapenv:Body></soapenv:Envelope>";
         HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
         ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
-        System.out.println(answer);
     }
-
-
-/*    @GetMapping("/trades/open")
-    public ResponseEntity<String> getOpenTrades(){
-        String openTrades = adminService.getOpenTrades();
-        return new ResponseEntity<String>(openTrades, HttpStatus.OK);
-    }
-
-    //checking filled/pending client trades
-    @GetMapping("/trades/pending")
-    public ResponseEntity<String> getPendingTrades(){
-        String pendingTrades = adminService.getPendingTrades();
-        return new ResponseEntity<String>(pendingTrades, HttpStatus.OK);
-    }*/
-
-
-
-
 }

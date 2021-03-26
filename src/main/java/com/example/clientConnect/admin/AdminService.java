@@ -1,7 +1,7 @@
 package com.example.clientConnect.admin;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.example.clientConnect.client.AdminException;
-import com.example.clientConnect.client.Client;
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.order.OrderService;
 import com.sun.istack.NotNull;
@@ -40,6 +40,11 @@ public class AdminService {
         return new ResponseEntity<Admin>(admin, HttpStatus.ACCEPTED);
     }
 
+
+
+
+
+
     // not sure of the use of these but these since the query will not interact with JPA
     public String getClientOrder() {
         return "all orders";
@@ -50,11 +55,15 @@ public class AdminService {
         return orderService.getAllStatusOrderByClient(id,status);
     }
 
-    public ResponseEntity<String> getOpenTradesId(Long exchangeId) throws AdminException{
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> gottenClient = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/id", exchangeId, String.class);
-        return new ResponseEntity<String>(gottenClient.getBody(), HttpStatus.ACCEPTED);
+    // get from JPA or from
+    public String getOpenTrades() {
+        return "Open Orders";
     }
+
+    public String getPendingTrades() {
+        return "Pending Orders ";
+    }
+
 
 
 }
