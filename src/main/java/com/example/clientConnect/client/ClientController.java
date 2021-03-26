@@ -50,7 +50,7 @@ public class ClientController {
 
     //creating a new client
     @PostMapping("/register")
-    public void registerClient(@RequestBody Client client){
+    public void registerClient(@RequestBody Client client) throws  JsonProcessingException{
         clientService.addNewClient(client);
         //Redis log creating of new clients
     }
@@ -63,7 +63,7 @@ public class ClientController {
 
     //getting client by ID
     @GetMapping("/{clientId}")
-    public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId,@RequestBody Client client) throws ClientException{
+    public ResponseEntity<Client> getClient(@PathVariable("clientId") Long clientId, @RequestBody Client client) throws ClientException{
         return clientService.getClientById(clientId);
     }
 

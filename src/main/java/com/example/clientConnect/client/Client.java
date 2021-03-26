@@ -4,14 +4,18 @@ package com.example.clientConnect.client;
 
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.portfolio.Portfolio;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //@Transactional
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property  = "clientId",
+        scope     = Long.class)
 public class Client {
 
 /*    private Long id;
@@ -26,8 +30,6 @@ public class Client {
     @Column(nullable = false)
     private LocalDate created_at = LocalDate.now();*/
 
-
-    @Column(name = "client_id")
     private long clientId;
     private String name;
     private String email;
@@ -36,11 +38,9 @@ public class Client {
 
 
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(targetEntity = Portfolio.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Portfolio> portfolios =  new ArrayList<>();
 
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
 
@@ -51,11 +51,8 @@ public class Client {
     @OneToMany(mappedBy="client",cascade = CascadeType.ALL)
     private List<Order> orders;*/
 
-
-
-
-
-
+    public Client() {
+    }
 
     public Client(String name, String password, Double balance) {
     }

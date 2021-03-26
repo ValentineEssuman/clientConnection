@@ -1,28 +1,25 @@
 package com.example.clientConnect.product;
 
 import com.example.clientConnect.portfolio.Portfolio;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.*;
 
-import javax.persistence.*;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property  = "productId",
+        scope     = Long.class)
 public class Product {
 
-    @Column(name = "product_Id")
+
     private long productId;
     private String ticker;
     private int quantity;
     private double lastTradedPrice;
     private String lastTradedSide;
 
-    @Transient
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private long portfolioId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "portfolio_Id")
+
     @JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
     @JsonIdentityReference(alwaysAsId = true)
     private Portfolio portfolio;

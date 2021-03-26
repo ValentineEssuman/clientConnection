@@ -2,13 +2,12 @@ package com.example.clientConnect.order;
 
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.portfolio.Portfolio;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.annotation.*;
 
-import javax.persistence.*;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property  = "clientOrderId",
+        scope     = Long.class)
 public class Order {
 
 /*   private Long id;
@@ -31,7 +30,6 @@ public class Order {
     @JoinColumn(name = "clientId")
     private Client client;*/
 
-    @Column(name = "client_Order_Id")
     private long clientOrderId;
     private String product;
     private double price;
@@ -40,11 +38,9 @@ public class Order {
     private String validationStatus;
     private String status;
 
-    @Transient
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private long clientId;
 
-    @Transient
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private long portfolioId;
 

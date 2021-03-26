@@ -3,38 +3,32 @@ package com.example.clientConnect.portfolio;
 import com.example.clientConnect.client.Client;
 import com.example.clientConnect.order.Order;
 import com.example.clientConnect.product.Product;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property  = "portfolioId",
+        scope     = Long.class)
 public class Portfolio {
 
-    @Column(name = "portfolio_Id")
+
     private long portfolioId;
     private String name;
 
-    @Transient
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private long clientId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
     @JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
     @JsonIdentityReference(alwaysAsId = true)
     private Client client;
 
     // client can place orders to make portforlio
-    @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Product> products = new ArrayList<>();
 
-    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Order> clientOrders = new ArrayList<>();
 

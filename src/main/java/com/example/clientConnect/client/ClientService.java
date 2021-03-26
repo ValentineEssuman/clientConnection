@@ -1,20 +1,12 @@
 package com.example.clientConnect.client;
 
 
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.order.OrderException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -28,10 +20,20 @@ public class ClientService {
     }
 
     //Register new client
-    public ResponseEntity<Client>addNewClient(Client client) {
+    public ResponseEntity<String>addNewClient(Client client) throws JsonProcessingException {
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(client);
+        //System.out.println(requestJson);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/register", client, Client.class);
-        return new ResponseEntity<Client>(client, HttpStatus.ACCEPTED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/register", entity, String.class);
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
     }
 
     //Login Client
@@ -49,7 +51,6 @@ public class ClientService {
         restTemplate.delete("https://tradeenginetestdb.herokuapp.com/api/v1/client/uregister/" + clientid);
         return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
-
 
     public ResponseEntity<Client> getClientById(Long clientid) throws ClientException {
         RestTemplate restTemplate = new RestTemplate();
