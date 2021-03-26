@@ -8,9 +8,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+
 @Service
 public class ClientService {
-
 
     //get all clients
     public Client[] getClients() {
@@ -77,6 +77,7 @@ public class ClientService {
         restTemplate.put("https://tradeenginedb.herokuapp.com/api/v1/client/update", updatedclient, Client.class);
         return new ResponseEntity<String>("Updated", HttpStatus.ACCEPTED);
     }
+
 
 }
 

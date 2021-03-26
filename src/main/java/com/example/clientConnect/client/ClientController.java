@@ -1,22 +1,14 @@
 package com.example.clientConnect.client;
 
 
-import com.example.clientConnect.order.Order;
 import com.example.clientConnect.order.OrderService;
 import com.example.clientConnect.portfolio.Portfolio;
 import com.example.clientConnect.portfolio.PortfolioService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.*;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import trade_engine.order_validation_service.GetOrderRequest;
-
-
-import java.util.List;
 
 
 @RestController
@@ -27,6 +19,7 @@ public class ClientController {
     private  final ClientService clientService;
     private final OrderService orderService;
     private final PortfolioService portfolioService;
+
 
     @Autowired
     public ClientController(ClientService clientService, OrderService orderService, PortfolioService portfolioService) {
