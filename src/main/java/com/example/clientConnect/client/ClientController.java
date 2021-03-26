@@ -9,16 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
 
 
 @RestController
 @RequestMapping(path="api/client")
 public class ClientController {
 
-
     private  final ClientService clientService;
     private final OrderService orderService;
     private final PortfolioService portfolioService;
+
+    Jedis jedis = new Jedis("redis-17587.c92.us-east-1-3.ec2.cloud.redislabs.com", 17587);
 
 
     @Autowired
@@ -26,7 +28,10 @@ public class ClientController {
         this.clientService = clientService;
         this.orderService = orderService;
         this.portfolioService = portfolioService;
+        jedis.auth("rLAKmB4fpXsRZEv9eJBkbddhTYc1RWtK");
+
     }
+
 
     //getting all clients
     @GetMapping("/all")
@@ -48,6 +53,7 @@ public class ClientController {
     public void registerClient(@RequestBody Client client) throws JsonProcessingException {
 
         clientService.addNewClient(client);
+        jedis.publish("report-message", client.getName()+":" + client.getEmail()+" has been registered");
         //Redis log creating of new clients
     }
 

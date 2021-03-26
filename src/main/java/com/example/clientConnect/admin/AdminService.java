@@ -33,10 +33,9 @@ public class AdminService {
     //Login Client
     public ResponseEntity<Admin> loginAdmin(@NotNull Admin admin) throws AdminException {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/client/login", admin, Admin.class);
+        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/opentrades", admin, Admin.class);
         return new ResponseEntity<Admin>(admin, HttpStatus.ACCEPTED);
     }
-
 
 
 
@@ -53,15 +52,31 @@ public class AdminService {
     }
 
     // get from JPA or from
-    public String getOpenTrades() {
-        return "Open Orders";
+    public Admin getOpenTrades() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/open", Admin.class);
+        return responseEntity.getBody();
     }
 
-    public String getPendingTrades() {
-        return "Pending Orders ";
+    public Admin getCanceledTrades() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/pending", Admin.class);
+        return responseEntity.getBody();
     }
 
 
+    public Admin setExchangeToTrade(Long exchange_id) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/exchangetotrade/pending",exchange_id, Admin.class);
+        return responseEntity.getBody();
 
+    }
+
+    public Admin getPendingTrades() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/open", Admin.class);
+        return responseEntity.getBody();
+    }
 }
 
