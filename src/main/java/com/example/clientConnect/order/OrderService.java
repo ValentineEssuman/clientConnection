@@ -4,6 +4,9 @@ package com.example.clientConnect.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import netscape.javascript.JSObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,11 +14,20 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class OrderService {
 
+    private Object JsonSerialize;
+
     //get all portfolios
-    public String getAllOrders(){
+    public Order[] getAllOrders(){
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Order[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/all", Order[].class);
-        return responseEntity.toString();
+        Order[] responseEntity = restTemplate.getForObject("https://tradeenginedb.herokuapp.com/api/v1/clientorder/all", Order[].class);
+        
+/*        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.acceptJsonFormatVisitor(Order, JsonSerialize);
+        System.out.println(requestJson);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);*/
+        return responseEntity;
     }
 
     //get all Orders for client base  by id
