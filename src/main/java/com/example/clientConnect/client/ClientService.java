@@ -44,7 +44,7 @@ public class ClientService {
 
         HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
         ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/login", entity, Client.class);
-        System.out.println(responseEntity.getBody());
+        //System.out.println(responseEntity.getBody());
         return new ResponseEntity<Client>(responseEntity.getBody(), HttpStatus.ACCEPTED);
     }
 
