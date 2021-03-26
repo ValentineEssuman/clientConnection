@@ -12,10 +12,10 @@ import org.springframework.web.client.RestTemplate;
 public class OrderService {
 
     //get all portfolios
-    public Order[] getAllOrders(){
+    public String getAllOrders(){
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Order[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/all", Order[].class);
-        return responseEntity.getBody();
+        return responseEntity.toString();
     }
 
     //get all Orders for client base  by id

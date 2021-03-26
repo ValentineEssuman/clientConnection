@@ -30,7 +30,7 @@ public class OrderController {
 
     //get all client order
     @GetMapping("/all")
-    public Order[] getAllOrders(){
+    public String getAllOrders(){
         return orderService.getAllOrders();
     }
     // login a client
