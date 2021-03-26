@@ -1,14 +1,6 @@
 package com.example.clientConnect.client;
 
-
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.portfolio.Portfolio;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Client {
 

@@ -1,8 +1,6 @@
 package com.example.clientConnect.client;
 
 
-
-import com.example.clientConnect.portfolio.Portfolio;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
