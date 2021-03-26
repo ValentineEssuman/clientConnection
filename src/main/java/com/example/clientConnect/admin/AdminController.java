@@ -1,6 +1,5 @@
 package com.example.clientConnect.admin;
 
-import com.example.clientConnect.client.AdminException;
 import com.example.clientConnect.order.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
