@@ -16,6 +16,7 @@ public class ClientService {
     public Client[] getClients() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Client[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/all", Client[].class);
+        System.out.println(responseEntity);
         return responseEntity.getBody();
     }
 

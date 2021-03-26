@@ -20,12 +20,10 @@ public class OrderController {
 
     private static final String NAMESPACE_URI = "http://trade-engine/order-validation-service";
     private final OrderService orderService;
-    private final ClientService clientService;
 
-    public OrderController(OrderService orderService, ClientService clientService) {
+    public OrderController(OrderService orderService) {
 
         this.orderService = orderService;
-        this.clientService = clientService;
     }
 
     //get all client order
