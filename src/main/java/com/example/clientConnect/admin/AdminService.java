@@ -65,7 +65,6 @@ public class AdminService {
         return responseEntity.getBody();
     }
 
-
     public Admin setExchangeToTrade(Long exchange_id) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/exchangetotrade/pending",exchange_id, Admin.class);
@@ -78,5 +77,6 @@ public class AdminService {
         ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/open", Admin.class);
         return responseEntity.getBody();
     }
+
 }
 

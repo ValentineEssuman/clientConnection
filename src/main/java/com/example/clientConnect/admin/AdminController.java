@@ -24,8 +24,6 @@ public class AdminController {
         return adminService.findAdmins();
     }
 
-    //getting all clients
-    @GetMapping("/all")
 
     @PostMapping("/login")
     public ResponseEntity<Admin> loginAdmin(@RequestBody Admin admin) throws AdminException {
@@ -44,7 +42,6 @@ public class AdminController {
     public ResponseEntity<Order> getStatusOrders(@PathVariable("client_id") Long  clientId, @PathVariable("status") String  status ) {
         return adminService.getStatusOrdersByClient(clientId, status);
     }
-
 
     @GetMapping("/trades/open")
     public Admin getOpenTrades(){

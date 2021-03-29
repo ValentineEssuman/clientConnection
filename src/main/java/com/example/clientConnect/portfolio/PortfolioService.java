@@ -51,7 +51,7 @@ public class PortfolioService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
-        ResponseEntity<Portfolio[]>  gottenPortfolio =  restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/portfolio/id", entity, Portfolio[].class);
+        ResponseEntity<Portfolio[]>  gottenPortfolio =  restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/portfolio/clientt/clientId", entity, Portfolio[].class);
         return new ResponseEntity<List<Portfolio>>(Arrays.asList(gottenPortfolio.getBody()) , HttpStatus.ACCEPTED);
 
     }
