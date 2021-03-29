@@ -1,59 +1,84 @@
 package com.example.clientConnect.client;
 
 
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.portfolio.PortfolioException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
-
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 @Service
 public class ClientService {
 
-
-    private final ClientRepository clientRepository;
-
-
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
-
-
-    public List<Client> getClients() {
-        return clientRepository.findAll();
+    //get all clients
+    public Client[] getClients() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Client[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/all", Client[].class);
+        System.out.println(responseEntity);
+        return responseEntity.getBody();
     }
 
     //Register new client
-    public Client addClient(Client client){
+    public ResponseEntity<Client>addNewClient(Client client) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(client);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        client = clientRepository.save(client);
-        return client;
-
-    }
-
-    public Client getClient(Long id) throws ClientException {
-
-        return clientRepository.findById(id).orElseThrow(
-                ()-> new ClientException("Client id "+id+" does not exist")
-        );
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+        ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/register", entity, Client.class);
+        return new ResponseEntity<Client>(client, HttpStatus.ACCEPTED);
     }
 
     //Login Client
-    public Client loginClient(@NotNull Client client) throws ClientException {
+    public ResponseEntity<Client> loginClient(@NotNull Client client) throws ClientException, JsonProcessingException {
 
-        return clientRepository.findClientByEmailAndPassword(client.getEmail(),client.getPassword()).orElseThrow(
-                ()-> new ClientException("Invalid credentials")
-        );
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(client);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+        ResponseEntity<Client> responseEntity = restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/login", entity, Client.class);
+        //System.out.println(responseEntity.getBody());
+        return new ResponseEntity<Client>(responseEntity.getBody(), HttpStatus.ACCEPTED);
     }
 
-    public Client getClientById(Long id) throws ClientException {
-
-        return clientRepository.findById(id).orElseThrow(
-                () -> new ClientException("Client with "+id+"does not exist")
-        );
+    //deleting a client
+    public ResponseEntity<String> deleteClient(Long clientid) {
+        //boolean exists = clientRepository.existsById(clientid);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginedb.herokuapp.com/api/v1/client/unregister/" + clientid);
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
+
+
+
+    public ResponseEntity<Client> getClientById(Long clientid) throws ClientException, JsonProcessingException {
+        Client client = new Client(clientid);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(client);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+        ResponseEntity<Client> gottenClient = restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/client/id", entity, Client.class);
+
+        return new ResponseEntity<Client>(gottenClient.getBody(), HttpStatus.ACCEPTED);
+    }
+
+    public ResponseEntity<String> updateClient(Client updatedclient) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put("https://tradeenginedb.herokuapp.com/api/v1/client/update", updatedclient, Client.class);
+        return new ResponseEntity<String>("Updated", HttpStatus.ACCEPTED);
+    }
+
 
 }
+
+

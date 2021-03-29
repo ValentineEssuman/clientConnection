@@ -1,127 +1,98 @@
 package com.example.clientConnect.order;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientException;
-import com.example.clientConnect.client.ClientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.ws.server.endpoint.annotation.Endpoint;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import trade_engine.order_validation_service.GetOrderRequest;
+import trade_engine.order_validation_service.GetOrderResponse;
 
-import java.io.DataInput;
-import java.io.IOException;
-import java.util.List;
+import javax.xml.soap.MessageFactory;
 
-@Endpoint
 //Uncommment if you want to work with the rest
-//@RestController
-//@RequestMapping(path="api/order")
+@RestController
+@RequestMapping(path="api/order")
 public class OrderController {
 
     private static final String NAMESPACE_URI = "http://trade-engine/order-validation-service";
     private final OrderService orderService;
-    private final ClientService clientService;
 
-    public OrderController(OrderService orderService, ClientService clientService) {
+    public OrderController(OrderService orderService) {
 
         this.orderService = orderService;
-        this.clientService = clientService;
     }
 
+    //get all client order
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getPortfolios(){
-        return new ResponseEntity<>(orderService.getAllOrders(),HttpStatus.OK);
+    public Order[] getAllOrders(){
+        return orderService.getAllOrders();
+    }
+    // login a client
+
+    //getting Orders by clientID
+    @GetMapping("/client/{clientid}")
+    public Order[] getAllClientOrders(@PathVariable("clientid") Long clientid) throws OrderException{
+        return orderService.getAllClientOrders(clientid);
     }
 
-    @GetMapping("/all/{clientid}")
-    public ResponseEntity<List<Order>> getOrders(@PathVariable("clientid") Long clientid) throws ClientException {
+    //getting Orders by ID
 
-        Client client = clientService.getClientById(clientid);
-        List<Order> clientOrders = orderService.getAllOrders(client);
-
-        return  new ResponseEntity<>(clientOrders, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@RequestParam Long id) throws OrderException {
-
-        Order orders = orderService.getOrder(id);
-        return  new ResponseEntity<>(orders, HttpStatus.OK);
-    }
-
-
-
-    @PostMapping("/ordersubmission")
-    public ResponseEntity<Order> addOrder(@RequestBody Order order) throws OrderException {
-        order = orderService.createOrder(order);
-        return  new ResponseEntity<>(order, HttpStatus.OK);
-    }
-
-/*    @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        *//*portfolio.setClient(client);*//*
-
-        portfolio =  portfolioService.addPortfolio(portfolio);
-
-        return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
-    }*/
-
-
-
-    //Submitting Order Soap Service Endpoints
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getOrderRequest")
-    public ResponseEntity<Object> submitOrderSoap(@RequestPayload Order orderjson) throws JsonProcessingException {
-        String url = "https://order-validation-service.herokuapp.com/ws";
-        GetOrderRequest orderRequest = new GetOrderRequest();
-        orderRequest.setOrder(orderjson);
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        String clientOrderstr = mapper.writeValueAsString(orderjson);
-        try {
-            Order clientOrder = mapper.readValue((DataInput) orderjson, Order.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("mapper error in reading value");
-        }
-        //Report System : Redis message to Reportingtopic to notify client order made
-        System.out.println(clientOrderstr);
-        Object orderMessage = restTemplate.postForObject(url, orderRequest, Object.class);
-        return new ResponseEntity<Object>(orderMessage, HttpStatus.MULTI_STATUS.OK);
-    }
-/*
-    public void sendOrder(@RequestBody  orderjson) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Object clientOrderstr = mapper.writeValueAsObject(orderjson);
-        RestTemplate restTemplate = new RestTemplate();
-
-    }
-    */
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetOrderRequest")
-    public void sendOrder(@RequestPayload  GetOrderRequest odr) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        XmlMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(odr);
-        System.out.println(xml);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_XML);
-        xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://trade-engine/order-validation-service\"><soapenv:Header/><soapenv:Body>"+xml+"</soapenv:Body></soapenv:Envelope>";
-        HttpEntity<String> entity = new HttpEntity<String>(xml,headers);
-        ResponseEntity<String> answer = restTemplate.postForEntity("https://order-validation-service.herokuapp.com/ws", entity, String.class);
-        System.out.println(answer);
+    @GetMapping("/order/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable("id") Long id) throws OrderException, JsonProcessingException {
+        return orderService.getOrder(id);
     }
 
 
+    // deleting client porfolio based on cliend id
+    @DeleteMapping("/delete/client/{clientid}")
+    public ResponseEntity<String> deleteOrderByClient(@PathVariable("clientid") Long clientid) throws OrderException {
+        orderService.deleteByClientId(clientid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
+
+    // order request submisssion
+    @PostMapping("/sendOrder")
+    public void sendOrder(@RequestBody Order odr) throws Exception {
+        System.out.println(odr);
+        trade_engine.order_validation_service.Order order = new trade_engine.order_validation_service.Order();
+        order.setPortfolioId(odr.getPortfolioId());
+        order.setClientId(odr.getClientId());
+        order.setSide(odr.getSide());
+        order.setQuantity(odr.getQuantity());
+        order.setProduct(odr.getProduct());
+        order.setPrice(odr.getPrice());
+        GetOrderRequest getOrderRequest = new GetOrderRequest();
+        getOrderRequest.setOrder(order);
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.afterPropertiesSet();
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("trade_engine.order_validation_service");
+        marshaller.afterPropertiesSet();
+
+        webServiceTemplate.setMarshaller(marshaller);
+        webServiceTemplate.setUnmarshaller(marshaller);
+        webServiceTemplate.afterPropertiesSet();
+        System.out.println(odr);
+        GetOrderResponse response =(GetOrderResponse) webServiceTemplate.marshalSendAndReceive("https://order-validation-service.herokuapp.com/ws", getOrderRequest);
+        System.out.println(response.getValidationStatus());
+    }
+
+    //find filled/successful orders
+    @GetMapping("/all/{status}")
+    public ResponseEntity<Order[]> getSuccessOrders(@PathVariable("status") String  status) {
+        return orderService.getAllOrdersByStatus(status);
+    }
+
+    //cancel trade
+    @GetMapping("/cancel/{clientorder_id}") // action: Cancel, order, open
+    public ResponseEntity<String> cancelTrade(@PathVariable("clientorder_id") Long clientOrder_id) throws OrderException {
+        return orderService.cancelTradeByClientOrderId(clientOrder_id);
+    }
 }
 

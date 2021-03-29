@@ -1,67 +1,48 @@
 package com.example.clientConnect.portfolio;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientException;
+
 import com.example.clientConnect.client.ClientService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/portfolio")
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
-    private final ClientService clientService;
 
     public PortfolioController(PortfolioService portfolioService, ClientService clientService) {
         this.portfolioService = portfolioService;
-        this.clientService = clientService;
     }
 
+    //get all portfolios
     @GetMapping("/all")
-    public ResponseEntity<List<Portfolio>> getPortfolios(){
-        return new ResponseEntity<>(portfolioService.getPortfolios(),HttpStatus.OK);
+    public  Portfolio[] getPortfolios(){
+        return portfolioService.getPortfolios();
     }
 
-    @GetMapping("/all/{client_id}")
-    public ResponseEntity<List<Portfolio>> getPortfolios(@PathVariable("client_id") Long client_id) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        List<Portfolio> portfolios= portfolioService.getPortfolios(client);
-
-        return  new ResponseEntity<>(portfolios, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Portfolio> getPortfolio(@RequestParam Long id) throws  PortfolioException {
-
-        Portfolio portfolio= portfolioService.getPortfolio(id);
-
-        return  new ResponseEntity<>(portfolio, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/add/{client_id}")
-    public ResponseEntity<Portfolio> addPortfolio(@PathVariable("client_id") Long client_id,@RequestBody Portfolio portfolio) throws ClientException {
-
-        Client client = clientService.getClientById(client_id);
-
-        /*portfolio.setClient(client);*/
-
-        portfolio =  portfolioService.addPortfolio(portfolio);
-
+    //add portfolio based on client id
+    @PostMapping("add/{client_id}")
+    public ResponseEntity<Portfolio> addPortfolio(@RequestParam("client_id") Long client_id,@RequestBody Portfolio portfolio) throws PortfolioException, JsonProcessingException {
+        portfolioService.addPortfolioByClientId(client_id, portfolio);
         return new ResponseEntity<>(portfolio,HttpStatus.ACCEPTED);
     }
 
+    // get porfolio based on client id
+    @GetMapping("/{client_id}")
+    public ResponseEntity<List<Portfolio>> getPortfolios(@RequestParam("client_id") Long client_id) throws PortfolioException, JsonProcessingException {
+        return portfolioService.getPortfolioById(client_id);
+    }
+
+    // deleting client porfolio based on cliend id
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePortfolio(@PathVariable("id") Long id){
-
+    public ResponseEntity<String> deletePortfolio(@RequestParam("id") Long id){
         portfolioService.deletePortfolio(id);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

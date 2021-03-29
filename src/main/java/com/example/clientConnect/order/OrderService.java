@@ -1,63 +1,81 @@
 package com.example.clientConnect.order;
 
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.client.ClientService;
-import com.example.clientConnect.portfolio.Portfolio;
-import com.example.clientConnect.portfolio.PortfolioException;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import netscape.javascript.JSObject;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ClientService clientService;
+    private Object JsonSerialize;
 
-    public OrderService(OrderRepository orderRepository, ClientService clientService) {
-        this.orderRepository = orderRepository;
-        this.clientService = clientService;
+    //get all portfolios
+    public Order[] getAllOrders(){
+        RestTemplate restTemplate = new RestTemplate();
+        Order[] responseEntity = restTemplate.getForObject("https://tradeenginedb.herokuapp.com/api/v1/clientorder/all", Order[].class);
+        
+/*        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.acceptJsonFormatVisitor(Order, JsonSerialize);
+        System.out.println(requestJson);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);*/
+        return responseEntity;
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    };
-
-    public List<Order> getAllOrders(Client client) {
-        return orderRepository.findAllByClient(client);
+    //get all Orders for client base  by id
+    public Order[] getAllClientOrders(Long clientId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order[]> clientOrders = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/clientid/"+clientId, Order[].class);
+        return clientOrders.getBody();
     }
 
+    //get Order by Orderid
+    public ResponseEntity<Order> getOrder(Long orderId) throws OrderException, JsonProcessingException {
+        Order order = new Order();
+        order.setClientOrderId(orderId);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(order);
+        System.out.println(requestJson);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-    //client create order is an apikey
-    public Order createOrder(Order order){
-        order = orderRepository.save(order);
-        // Alert: Report new Order to Reporting Section
-        return order;
-
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+        ResponseEntity<Order>  gottenOrder =  restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/get",entity, Order.class);
+        return new ResponseEntity<Order>(gottenOrder.getBody() , HttpStatus.ACCEPTED);
     }
 
-    public Order getOrder(Long id) throws OrderException {
-        return orderRepository.findById(id).orElseThrow(
-                ()-> new OrderException("Order "+id+" does not exist")
-        );
+    public ResponseEntity<String> deleteByClientId(long clientId) throws OrderException{
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://tradeenginedb.herokuapp.com/api/v1/portfolio/delete/"+ clientId); // change
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
-/*    //find filled/successful orders
-    public List<Order> getSuccessOrder( status) {
-        List<Order> statusOrders = orderRepository.findOrdersByStatus(status);
-        return statusOrders;
+    //get all Orders for by status /
+    public ResponseEntity<Order[]> getAllOrdersByStatus(String status) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order[]>  statusOrders = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/status/" + status, Order[].class);
+        return new ResponseEntity<Order[]>(statusOrders.getBody() , HttpStatus.ACCEPTED);
     }
 
-    //findList of orders by clients
-    public List<Order> clientOrdersbyId(Long clientId) throws OrderException{
-        Client client = clientService.getClientById(clientId);
-        List<Order> orders = orderRepository.findAllByClient(client);
-        return orders;
-    }*/
+    //get all Orders for by status /
+    public ResponseEntity<Order> getAllStatusOrderByClient(Long client_id,String status) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Order>  statusOrders = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/"+client_id+"/" + status, Order.class);
+        return new ResponseEntity<Order>(statusOrders.getBody() , HttpStatus.ACCEPTED);
+    }
 
-
-
-
+    public ResponseEntity<String> cancelTradeByClientOrderId(Long clientOrder_id) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String>  cancaledOrder = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/clientorder/cancel/"+clientOrder_id,String.class);
+        return new ResponseEntity<String>(cancaledOrder.getBody(), HttpStatus.ACCEPTED);
+    }
 }

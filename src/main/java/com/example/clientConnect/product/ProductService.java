@@ -1,70 +1,56 @@
 package com.example.clientConnect.product;
 
-import com.example.clientConnect.portfolio.Portfolio;
-import com.example.clientConnect.portfolio.PortfolioException;
-import com.example.clientConnect.portfolio.PortfolioService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
-
-    public ProductService(ProductRepository productRepository, PortfolioService portfolioService) {
-        this.productRepository = productRepository;
-    }
 
     //Getting all products
-    public List<Product> getAllProducts(){
-        List<Product> products = productRepository.findAll();
-
-        return products;
-
+    public Product[] getAllProducts(){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Product[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/product/all", Product[].class);
+        return responseEntity.getBody();
     }
 
-    //Getting all products with portfolio
-    public List<Product> getAllProductsForPortfolio(Portfolio portfolio)  {
-
-        List<Product> products = productRepository.findProductsByPortfolio(portfolio);
-
-        return products;
-
+    public Product[] getProductsPortfolio(long portfolioId){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Product[]> responseEntity = restTemplate.getForEntity("https://tradeenginedb.herokuapp.com/api/v1/product/portfolioId/"+portfolioId, Product[].class);
+        return responseEntity.getBody();
     }
 
-    //Getting just the Product
-    public Product getProduct(Long id) throws ProductException {
+    //add product to portfolio by portfolioId
+    public void addProductByProductId(Long portfolioId, Product product ) throws JsonProcessingException {
+        product.setPortfolioId(portfolioId);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(product);
+        System.out.println(requestJson);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Product product = productRepository.findById(id).orElseThrow(
-                ()-> new ProductException("Product with id "+id+" not found")
-        );
-
-        return product;
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson,headers);
+        restTemplate.postForEntity("https://tradeenginedb.herokuapp.com/api/v1/product/new", entity, Product.class);
     }
 
+    public ResponseEntity<String> deleteProduct(Long productId) throws ProductException {
+        RestTemplate restTemplate = new RestTemplate();
 
-    public Product addProduct(Product product){
-
-        product = productRepository.save(product);
-
-        return product;
+        restTemplate.delete("https://tradeenginedb.herokuapp.com/api/v1/product/delete/"+ productId);
+        return new ResponseEntity<String>("Deleted", HttpStatus.ACCEPTED);
     }
 
-
-    public String deleteProduct(Long id) throws ProductException {
-
-        Product product = productRepository.findById(id).orElseThrow(
-                ()-> new ProductException("Product with id "+id+" not found")
-        );
-
-        productRepository.delete(product);
-
-        return "Product successfully deleted";
+    public ResponseEntity<String> updateProduct(long productId, Product updatedproduct) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Product> entity = new HttpEntity<>(updatedproduct,headers);
+        restTemplate.exchange("https://tradeenginedb.herokuapp.com/api/v1/product/update/"+productId,HttpMethod.PUT,entity,void.class);
+        return new ResponseEntity<String>("Updated", HttpStatus.ACCEPTED);
     }
-
-
 }

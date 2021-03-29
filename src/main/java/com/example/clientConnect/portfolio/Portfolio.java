@@ -1,59 +1,40 @@
 package com.example.clientConnect.portfolio;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.order.Order;
-import com.example.clientConnect.product.Product;
-import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.List;
-
-@Entity
-@Table
-//@Transactional
 public class Portfolio {
 
-    @Id
-/*    @SequenceGenerator(
-            name="portfolio_sequence", sequenceName = "portfolio_sequence",
-            allocationSize = 1
-    )*/
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
-    private Long id;
-
-    @Column(nullable = false)
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private long portfolioId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientID")
-    private Client client;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private long clientId;
 
-    // client can place orders to make portforlio
-    @OneToMany(mappedBy="portfolio",cascade = CascadeType.ALL)
-    private List<Product> products;
 
-    private LocalDate created_at = LocalDate.now();
+    public Portfolio() {
+    }
 
-    public Portfolio(String name,
-                     Client client) {
-        this.name = name;
-        this.client = client;
-
+    public Portfolio(long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public Portfolio(String name) {
         this.name = name;
     }
 
-    public Portfolio() {
-
+    public Portfolio(String name, long clientId) {
+        this.name = name;
+        this.clientId = clientId;
     }
 
-    public Long getId() {
-        return id;
+    public long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public String getName() {
@@ -64,16 +45,22 @@ public class Portfolio {
         this.name = name;
     }
 
-    public Client getClient() {
-        return client;
+    public long getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(long clientId) {
+        this.clientId = clientId;
     }
 
-    public LocalDate getCreated_at() {
-        return created_at;
+
+    @Override
+    public String toString() {
+        return "Portfolio{" +
+                "portfolioId=" + portfolioId +
+                ", name='" + name + '\'' +
+                ", clientId=" + clientId +
+                '}';
     }
 
 }

@@ -1,81 +1,102 @@
 package com.example.clientConnect.product;
 
-import com.example.clientConnect.client.Client;
-import com.example.clientConnect.portfolio.Portfolio;
-import com.sun.istack.NotNull;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Entity
-@Transactional
-@Table(name = "products")
 public class Product {
+    private long productId;
+    private String ticker;
+    private int quantity;
+    private double lastTradedPrice;
+    private String lastTradedSide;
 
-    @Id
-    @SequenceGenerator(
-            name="product_sequence", sequenceName = "product_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "product_sequence"
-    )
-    private Long id;
 
-    @NotNull
-    private String name;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private long portfolioId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "portfolioID")
-    private Portfolio portfolio;
-
-    @Column(nullable = false)
-    private double quantity;
-
-    private LocalDate created_at = LocalDate.now();
-
-    public Product(String name, Portfolio portfolio, double quantity) {
-        this.name = name;
-        this.portfolio = portfolio;
-        this.quantity = quantity;
-    }
 
     public Product() {
-
     }
 
-    public Long getId() {
-        return id;
+    public Product(Long productId, Integer quantity, Double lastTradedPrice, String lastTradedSide) {
     }
 
-    public String getName() {
-        return name;
+    public Product(int quantity, double lastTradedPrice, String lastTradedSide) {
+        this.quantity = quantity;
+        this.lastTradedPrice = lastTradedPrice;
+        this.lastTradedSide = lastTradedSide;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Product(long productId) {
+        this.productId = productId;
     }
 
-    public Portfolio getPortfolio() {
-        return portfolio;
+    public Product(String ticker, int quantity, double lastTradedPrice, String lastTradedSide) {
+        this.ticker = ticker;
+        this.quantity = quantity;
+        this.lastTradedPrice = lastTradedPrice;
+        this.lastTradedSide = lastTradedSide;
     }
 
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
+    public long getProductId() {
+        return productId;
     }
 
-    public double getQuantity() {
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public String getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
+    }
+
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public LocalDate getCreated_at() {
-        return created_at;
+    public double getLastTradedPrice() {
+        return lastTradedPrice;
+    }
+
+    public void setLastTradedPrice(double lastTradedPrice) {
+        this.lastTradedPrice = lastTradedPrice;
+    }
+
+    public String getLastTradedSide() {
+        return lastTradedSide;
+    }
+
+    public void setLastTradedSide(String lastTradedSide) {
+        this.lastTradedSide = lastTradedSide;
+    }
+
+    public long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", ticker='" + ticker + '\'' +
+                ", quantity=" + quantity +
+                ", lastTradedPrice=" + lastTradedPrice +
+                ", lastTradedSide='" + lastTradedSide + '\'' +
+                ", portfolioId=" + portfolioId +
+                '}';
     }
 
 }
+

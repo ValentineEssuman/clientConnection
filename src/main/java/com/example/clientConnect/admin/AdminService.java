@@ -1,66 +1,82 @@
 package com.example.clientConnect.admin;
-
-import com.example.clientConnect.client.AdminException;
-import com.example.clientConnect.client.Client;
+import com.example.clientConnect.order.Order;
+import com.example.clientConnect.order.OrderService;
 import com.sun.istack.NotNull;
-import org.hibernate.hql.internal.ast.tree.IndexNode;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AdminService {
 
-    private final AdminRepository adminRepository;
+    private  final OrderService orderService;
 
+    public AdminService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
-    @Autowired
-    public AdminService(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+    //get all clients
+    public Admin[] findAdmins() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin[]> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/all", Admin[].class);
+        return responseEntity.getBody();
+    }
+
+    //Register new admin
+    public void addNewAdmin(Admin admin) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/register", admin, Admin.class);
 
     }
 
-    public List<Admin> findAdmins(){
-        return adminRepository.findAll();
+    //Login Client
+    public ResponseEntity<Admin> loginAdmin(@NotNull Admin admin) throws AdminException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/opentrades", admin, Admin.class);
+        return new ResponseEntity<Admin>(admin, HttpStatus.ACCEPTED);
     }
 
-    //add a new admin
-    public Admin addAdmin(@NotNull Admin admin){
-        Admin newadmin = adminRepository.save(admin);
-        return newadmin;
-    }
 
-    //login
-    public Admin loginAdmin(@NotNull Admin admin) throws AdminException {
 
-        return adminRepository.findAdminByEmailAndPassword(admin.getEmail(), admin.getPassword()).orElseThrow(
-                ()-> new AdminException("Admin does not exist or wrong input of admin")
-        );
 
-    }
 
     // not sure of the use of these but these since the query will not interact with JPA
     public String getClientOrder() {
         return "all orders";
     }
 
-    public String getSuccessOrders() {
-        return "all succesfull orders";
+    // get successful order for a client
+    public ResponseEntity<Order> getStatusOrdersByClient(Long id, String status) {
+        return orderService.getAllStatusOrderByClient(id,status);
     }
-
-    public String getFailedOrders() {
-        return "failed orders";
-    }
-
 
     // get from JPA or from
-    public String getOpenTrades() {
-        return "Open Orders";
+    public Admin getOpenTrades() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/open", Admin.class);
+        return responseEntity.getBody();
     }
 
-    public String getPendingTrades() {
-        return "Pending Orders ";
+    public Admin getCanceledTrades() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/pending", Admin.class);
+        return responseEntity.getBody();
+    }
+
+
+    public Admin setExchangeToTrade(Long exchange_id) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.postForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/exchangetotrade/pending",exchange_id, Admin.class);
+        return responseEntity.getBody();
+
+    }
+
+    public Admin getPendingTrades() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Admin> responseEntity = restTemplate.getForEntity("https://tradeenginetestdb.herokuapp.com/api/v1/admin/trades/open", Admin.class);
+        return responseEntity.getBody();
     }
 }
 
