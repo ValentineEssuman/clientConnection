@@ -53,7 +53,7 @@ public class ClientController {
     public void registerClient(@RequestBody Client client) throws JsonProcessingException {
 
         clientService.addNewClient(client);
-        jedis.publish("report-message", client.getName()+":" + client.getEmail()+" has been registered");
+        jedis.publish("report-message", "Client Connectivity"+ client.getName()+":" + client.getEmail()+" has been registered");
         //Redis log creating of new clients
     }
 
